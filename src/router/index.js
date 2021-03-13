@@ -1,23 +1,30 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import SignIn from "../views/SignIn.vue";
+import Store from "../store";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "login",
+    component: SignIn,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Home.vue"),
+    meta: { requiresAuth: true }
   },
   {
     path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    name: "about",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    meta: { requiresAuth: true }
   }
 ];
 
@@ -25,6 +32,27 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
+});
+
+router.beforeEach((to, from, next) => {
+  console.log("login dulu", Store.state.auth.isLoggedin);
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!Store.state.auth.isLoggedin) {
+      next({
+        name: "login"
+      });
+    } else {
+      next();
+    }
+  } else {
+    if (Store.state.auth.isLoggedin) {
+      next({
+        name: "dashboard"
+      });
+    } else {
+      next();
+    }
+  }
 });
 
 export default router;

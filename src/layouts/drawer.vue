@@ -1,0 +1,110 @@
+<template>
+  <v-navigation-drawer
+    v-model="drawerside"
+    fixed
+    :mini-variant.sync="mini"
+    overlay-color="lime lighten-5"
+    :temporary="isMobile"
+    color="secondary"
+    app
+  >
+    <v-list-item class="px-2">
+      <v-list-item-avatar>
+        <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+      </v-list-item-avatar>
+
+      <v-list-item-title>John Leider</v-list-item-title>
+
+      <v-btn icon @click.stop="draw()">
+        <v-icon>mdi-chevron-left</v-icon>
+      </v-btn>
+    </v-list-item>
+
+    <v-divider></v-divider>
+
+    <v-list dense>
+      <v-list-item
+        color="primary"
+        v-for="item in items"
+        :key="item.title"
+        link
+        :to="item.link"
+      >
+        <v-list-item-icon>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+
+    <template v-slot:append>
+      <div class="pa-2">
+        <v-btn color="primary" block dark>
+          Logout
+          <v-icon>
+            mdi-logout
+          </v-icon>
+        </v-btn>
+      </div>
+    </template>
+    <!-- <v-navigation-drawer-border color="primary"></v-navigation-drawer-border> -->
+  </v-navigation-drawer>
+</template>
+
+<script>
+import { mapState } from "vuex";
+
+export default {
+  data: () => ({
+    items: [
+      { title: "Sensor", icon: "mdi-leak", link: "#" },
+      { title: "Rakit Apung", icon: "mdi-bed-outline", link: "#" },
+      { title: "Tray", icon: "mdi-tray", link: "#" },
+      { title: "Plant", icon: "mdi-sprout-outline", link: "#" },
+      { title: "Users", icon: "mdi-account-group-outline", link: "#" },
+      {
+        title: "Dashboard",
+        icon: "mdi-view-dashboard-outline",
+        link: { name: "dashboard" }
+      },
+      {
+        title: "My Account",
+        icon: "mdi-account-outline",
+        link: { name: "about" }
+      }
+    ]
+  }),
+
+  computed: {
+    ...mapState("layout", ["isMobile"]),
+    drawerside: {
+      get() {
+        return this.$store.state.layout.drawerSide;
+      },
+      set(value) {
+        this.$store.commit("layout/setDrawerside", value);
+      }
+    },
+    mini: {
+      get() {
+        return this.$store.state.layout.mini;
+      },
+      set(value) {
+        this.$store.commit("layout/setMini", value);
+      }
+    }
+  },
+  methods: {
+    draw: function() {
+      if (this.isMobile) {
+        this.drawerside = !this.drawerside;
+      } else {
+        this.mini = !this.mini;
+      }
+    }
+  }
+};
+</script>

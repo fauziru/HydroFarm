@@ -1,7 +1,14 @@
 <template>
   <v-app-bar fixed color="white" height="56px" elevate-on-scroll app>
     <v-app-bar-nav-icon @click.stop="draw()"></v-app-bar-nav-icon>
-
+    <v-img
+      alt="Vuetify Logo"
+      class="shrink mr-2"
+      contain
+      :src="require('../assets/logo.png')"
+      transition="scale-transition"
+      width="40"
+    />
     <v-spacer></v-spacer>
 
     <!-- menu navbar -->

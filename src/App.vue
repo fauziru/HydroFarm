@@ -1,6 +1,16 @@
 <template>
   <v-app>
     <!-- sidebar -->
+    <v-progress-linear
+      v-if="loadState"
+      height="10"
+      indeterminate
+      color="primary"
+      reverse
+      fixed
+      style="z-index: 10"
+    ></v-progress-linear>
+    <Alert />
     <Sidebar v-if="isLoggedin" />
     <!-- navbar -->
     <!-- <v-app-bar app color="primary" dark>
@@ -36,13 +46,12 @@
       </v-btn>
     </v-app-bar> -->
     <Navbar v-if="isLoggedin" />
-
-    <v-main :style="!isLoggedin ? '' :'padding-bottom: 33px'">
+    <v-main :style="!isLoggedin ? '' : 'padding-bottom: 33px'">
       <v-sheet color="grey lighten-4">
         <v-container v-if="isLoggedin" fluid>
           <router-view></router-view>
         </v-container>
-        <router-view v-if="!isLoggedin"></router-view>
+        <Guest v-if="!isLoggedin" />
       </v-sheet>
     </v-main>
 
@@ -54,8 +63,9 @@
 import { mapState, mapActions } from "vuex";
 import Bottombar from "./layouts/bottombar.vue";
 import Sidebar from "./layouts/drawer.vue";
-
-import Navbar from "./layouts/navbar";
+import Guest from "./layouts/guest.vue";
+import Navbar from "./layouts/navbar.vue";
+import Alert from "./components/Alert.vue";
 
 export default {
   name: "App",
@@ -63,7 +73,9 @@ export default {
   components: {
     Navbar,
     Bottombar,
-    Sidebar
+    Sidebar,
+    Guest,
+    Alert
   },
 
   data: () => ({
@@ -78,12 +90,18 @@ export default {
     }
   },
 
+  created() {
+    console.log("intialize app");
+  },
+
   mounted() {
+    console.log("app loadState", this.loadState);
     this.onResize();
     window.addEventListener("resize", this.onResize, { passive: true });
   },
   computed: {
-    ...mapState("auth", ["isLoggedin"])
+    ...mapState("auth", ["isLoggedin"]),
+    ...mapState("layout", ["loadState"])
   },
   methods: {
     ...mapActions("layout", ["mobileBreak"]),

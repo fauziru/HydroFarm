@@ -10,10 +10,14 @@
   >
     <v-list-item class="px-2">
       <v-list-item-avatar>
-        <v-img src="https://randomuser.me/api/portraits/men/85.jpg"></v-img>
+        <v-img
+          :src="
+            user.img_path || `https://ui-avatars.com/api/?name=${user.name}`
+          "
+        ></v-img>
       </v-list-item-avatar>
 
-      <v-list-item-title>John Leider</v-list-item-title>
+      <v-list-item-title>{{ user.email_address }}</v-list-item-title>
 
       <v-btn icon @click.stop="draw()">
         <v-icon>mdi-chevron-left</v-icon>
@@ -42,7 +46,7 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn color="primary" block dark>
+        <v-btn @click="logout" color="primary" block dark>
           Logout
           <v-icon>
             mdi-logout
@@ -80,6 +84,7 @@ export default {
 
   computed: {
     ...mapState("layout", ["isMobile"]),
+    ...mapState("auth", ["user"]),
     drawerside: {
       get() {
         return this.$store.state.layout.drawerSide;
@@ -104,6 +109,12 @@ export default {
       } else {
         this.mini = !this.mini;
       }
+    },
+    logout: function() {
+      this.$store.commit("layout/setLoadstate", true);
+      this.$store
+        .dispatch("auth/logout")
+        .then(() => this.$store.commit("layout/setLoadstate", false));
     }
   }
 };

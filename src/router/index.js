@@ -15,15 +15,25 @@ const routes = [
   {
     path: "/dashboard",
     name: "dashboard",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Home.vue"),
+    component: () => import("../views/Home.vue"),
     meta: { requiresAuth: true }
   },
   {
     path: "/about",
     name: "about",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue"),
+    component: () => import("../views/About.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/activity",
+    name: "activity",
+    component: () => import("../views/Activity.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/schedule",
+    name: "schedule",
+    component: () => import("../views/Schedule.vue"),
     meta: { requiresAuth: true }
   }
 ];

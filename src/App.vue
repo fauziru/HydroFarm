@@ -46,12 +46,13 @@
       </v-btn>
     </v-app-bar> -->
     <Navbar v-if="isLoggedin" />
-    <v-main :style="!isLoggedin ? '' : 'padding-bottom: 33px'">
-      <v-sheet color="grey lighten-4">
-        <v-container v-if="isLoggedin" fluid>
+    <v-main>
+      <v-sheet color="grey lighten-4" style="min-height: 100vh">
+        <div class="bg-wave" style="height: 360px"></div>
+        <v-container v-if="isLoggedin" style="margin-top: -360px" fluid>
           <router-view></router-view>
         </v-container>
-        <Guest v-if="!isLoggedin" />
+        <Guest v-if="!isLoggedin" style="margin-top: -360px" />
       </v-sheet>
     </v-main>
 
@@ -118,5 +119,8 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+.bg-wave {
+  background-image: url("~@/assets/images/wave.svg");
 }
 </style>

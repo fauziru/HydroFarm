@@ -7,10 +7,18 @@ const state = () => ({
     type: "",
     message: "",
     state: false
-  }
+  },
+  tabs: "",
+  tab: null
 });
 
 const mutations = {
+  setTab(state, bool) {
+    state.tab = bool;
+  },
+  setTabs(state, payload) {
+    state.tabs = payload;
+  },
   setIsmobile(state, bool) {
     state.isMobile = bool;
   },
@@ -55,6 +63,9 @@ const actions = {
       commit("setAlertState", false);
       commit("setAlert", { type: "", message: "" });
     }, 2000);
+  },
+  renderLayout({ commit }, payload) {
+    commit("setLayout", payload);
   }
 };
 

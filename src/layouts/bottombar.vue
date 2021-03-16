@@ -1,6 +1,6 @@
 <template>
-  <v-container v-if="isMobile" fluid>
-    <v-app-bar bottom app>
+  <div>
+    <v-app-bar v-if="isMobile && this.$route.meta.bottomNav" bottom app>
       <v-bottom-navigation fixed color="primary" grow shift>
         <v-btn
           v-for="(item, index) in itemBottombar"
@@ -12,7 +12,23 @@
         </v-btn>
       </v-bottom-navigation>
     </v-app-bar>
-  </v-container>
+
+    <v-fab-transition>
+      <v-btn
+        @click="hasHistory() ? $router.go(-1) : $router.push('/')"
+        v-if="this.$route.meta.backButton && isMobile"
+        color="secondary"
+        elevation="2"
+        fixed
+        fab
+        small
+        right
+        bottom
+      >
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+    </v-fab-transition>
+  </div>
 </template>
 
 <script>
@@ -39,6 +55,11 @@ export default {
   }),
   computed: {
     ...mapState("layout", ["isMobile", "drawerSide"])
+  },
+  methods: {
+    hasHistory() {
+      return window.history.length > 2;
+    }
   }
 };
 </script>

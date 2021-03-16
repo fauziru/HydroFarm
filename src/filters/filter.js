@@ -41,10 +41,10 @@ Vue.filter("cD", t => {
 Vue.filter("typeNotif", function(section, attribute) {
   const keyIconColor = [
     {
-      type: "AppNotificationsOrderanMasuk",
-      title: "Order",
-      icon: "fas fa-shopping-bag",
-      color: "bg-info"
+      type: "AppNotificationsNutrisiKurang",
+      title: "Nutrisi Kurang",
+      icon: "mdi-leak",
+      color: "red"
     },
     {
       type: "AppNotificationsMessageMasuk",

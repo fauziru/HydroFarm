@@ -5,7 +5,7 @@
     :mini-variant.sync="mini"
     overlay-color="lime lighten-5"
     :temporary="isMobile"
-    color="secondary"
+    color="bgGrey"
     app
   >
     <v-list-item class="px-2">
@@ -77,7 +77,7 @@ export default {
       {
         title: "My Account",
         icon: "mdi-account-outline",
-        link: { name: "about" }
+        link: { name: "account" }
       }
     ]
   }),

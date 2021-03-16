@@ -13,7 +13,8 @@ export default new Vuetify({
     themes: {
       light: {
         primary: colors.lightGreen.darken1,
-        secondary: colors.grey.lighten5,
+        secondary: colors.lightBlue.lighten1,
+        bgGrey: colors.grey.lighten5,
         accent: colors.lightGreen.lighten5,
         error: "#FF5252",
         info: "#2196F3",

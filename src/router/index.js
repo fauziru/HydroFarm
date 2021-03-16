@@ -16,25 +16,31 @@ const routes = [
     path: "/dashboard",
     name: "dashboard",
     component: () => import("../views/Home.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, bottomNav: true }
   },
   {
-    path: "/about",
-    name: "about",
-    component: () => import("../views/About.vue"),
+    path: "/account",
+    name: "account",
+    component: () => import("../views/Account.vue"),
     meta: { requiresAuth: true }
   },
   {
     path: "/activity",
     name: "activity",
     component: () => import("../views/Activity.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, bottomNav: true }
   },
   {
     path: "/schedule",
     name: "schedule",
     component: () => import("../views/Schedule.vue"),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, bottomNav: true }
+  },
+  {
+    path: "/notification",
+    name: "notification",
+    component: () => import("../views/Notification.vue"),
+    meta: { requiresAuth: true, backButton: true }
   }
 ];
 

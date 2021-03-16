@@ -10,7 +10,7 @@
           height="100"
         />
       </v-card-title>
-      <v-card-title class="display-2 mb-3 justify-center px-12 px-md-15">
+      <v-card-title class="display-2 mb-3 justify-center px-2 px-md-15">
         Danur Farm
       </v-card-title>
       <v-card-subtitle>Masuk ke akun anda</v-card-subtitle>
@@ -39,6 +39,9 @@
           <!-- <v-checkbox v-model="form.rememberMe" label="Ingat saya"></v-checkbox> -->
           <v-btn
             @click="loginAttemp"
+            @keypress.enter="loginAttemp"
+            @keydown.enter="loginAttemp"
+            @keyup.enter="loginAttemp"
             block
             is-elevated
             has-bg

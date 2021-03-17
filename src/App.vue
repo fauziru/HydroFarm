@@ -9,7 +9,7 @@
       reverse
       fixed
       style="z-index: 10"
-    ></v-progress-linear>
+    />
     <Alert />
     <Sidebar v-if="isLoggedin" />
     <!-- navbar -->
@@ -47,12 +47,25 @@
     </v-app-bar> -->
     <Navbar v-if="isLoggedin" />
     <v-main>
-      <v-sheet color="grey lighten-4" style="min-height: 100vh">
-        <div class="bg-wave" style="height: 360px"></div>
-        <v-container v-if="isLoggedin" style="margin-top: -360px" fluid>
-          <router-view></router-view>
+      <v-sheet
+        color="grey lighten-4"
+        style="min-height: 100vh"
+      >
+        <div
+          class="bg-wave"
+          style="height: 360px"
+        />
+        <v-container
+          v-if="isLoggedin"
+          style="margin-top: -360px"
+          fluid
+        >
+          <router-view />
         </v-container>
-        <Guest v-if="!isLoggedin" style="margin-top: -360px" />
+        <Guest
+          v-if="!isLoggedin"
+          style="margin-top: -360px"
+        />
       </v-sheet>
     </v-main>
 
@@ -61,15 +74,15 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import Bottombar from "./layouts/bottombar.vue";
-import Sidebar from "./layouts/drawer.vue";
-import Guest from "./layouts/guest.vue";
-import Navbar from "./layouts/navbar.vue";
-import Alert from "./components/Alert.vue";
+import { mapState, mapActions } from 'vuex'
+import Bottombar from './layouts/bottombar.vue'
+import Sidebar from './layouts/drawer.vue'
+import Guest from './layouts/guest.vue'
+import Navbar from './layouts/navbar.vue'
+import Alert from './components/Alert.vue'
 
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
     Navbar,
@@ -83,44 +96,45 @@ export default {
     //
   }),
 
-  beforeDestroy() {
-    if (typeof window === "undefined") {
-      return window.removeEventListener("resize", this.onResize, {
+  computed: {
+    ...mapState('auth', ['isLoggedin']),
+    ...mapState('layout', ['loadState'])
+  },
+
+  beforeDestroy () {
+    if (typeof window === 'undefined') {
+      return window.removeEventListener('resize', this.onResize, {
         passive: true
-      });
+      })
     }
   },
 
-  created() {
-    console.log("intialize app");
+  created () {
+    console.log('intialize app')
   },
 
-  mounted() {
-    console.log("app loadState", this.loadState);
-    this.onResize();
-    window.addEventListener("resize", this.onResize, { passive: true });
-  },
-  computed: {
-    ...mapState("auth", ["isLoggedin"]),
-    ...mapState("layout", ["loadState"])
+  mounted () {
+    console.log('app loadState', this.loadState)
+    this.onResize()
+    window.addEventListener('resize', this.onResize, { passive: true })
   },
   methods: {
-    ...mapActions("layout", ["mobileBreak"]),
-    onResize() {
-      this.mobileBreak(window.innerWidth < 1264);
+    ...mapActions('layout', ['mobileBreak']),
+    onResize () {
+      this.mobileBreak(window.innerWidth < 1264)
     }
   }
-};
+}
 </script>
 
 <style>
 #app {
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
 .bg-wave {
-  background-image: url("~@/assets/images/wave.svg");
+  background-image: url('~@/assets/images/wave.svg');
 }
 </style>

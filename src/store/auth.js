@@ -1,15 +1,11 @@
-// import Vue from 'vue'
-// import axios from 'axios'
-// import VueAxios from 'vue-axios'
-import router from "../router";
-
-// Vue.use(VueAxios, axios)
+import axios from '../plugins/vueaxios'
+import router from '../router'
 
 const AUTH_MUTATIONS = {
-  SET_USER: "SET_USER",
-  SET_PAYLOAD: "SET_PAYLOAD",
-  LOGOUT: "LOGOUT"
-};
+  SET_USER: 'SET_USER',
+  SET_PAYLOAD: 'SET_PAYLOAD',
+  LOGOUT: 'LOGOUT'
+}
 const state = () => ({
   isLoggedin: false,
   access_token: null, // JWT access token
@@ -18,15 +14,15 @@ const state = () => ({
   email_address: null, // user email address
   expiresin: null, // expire time token
   user: null
-});
+})
 
 const mutations = {
   // store the logged in user in the state
   [AUTH_MUTATIONS.SET_USER](state, user) {
-    state.id = user.id;
-    state.email_address = user.email_address;
-    state.user = user;
-    state.isLoggedin = true;
+    state.id = user.id
+    state.email_address = user.email_address
+    state.user = user
+    state.isLoggedin = true
   },
 
   // store new or updated token fields in the state
@@ -34,11 +30,11 @@ const mutations = {
     state,
     { access_token, expires_in, refresh_token = null }
   ) {
-    state.access_token = access_token;
-    state.expiresin = expires_in;
+    state.access_token = access_token
+    state.expiresin = expires_in
     // refresh token is optional, only set it if present
     if (refresh_token) {
-      state.refresh_token = refresh_token;
+      state.refresh_token = refresh_token
     }
   },
 
@@ -46,66 +42,64 @@ const mutations = {
   [AUTH_MUTATIONS.LOGOUT](state, force = null) {
     if (force) {
       window.axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${state.access_token}`;
-      window.axios.get("/logout");
+        'Authorization'
+      ] = `Bearer ${state.access_token}`
+      window.axios.get('/logout')
     }
-    state.id = null;
-    state.email_address = null;
-    state.access_token = null;
-    state.refresh_token = null;
-    state.expires_in = null;
-    state.isLoggedin = false;
+    state.id = null
+    state.email_address = null
+    state.access_token = null
+    state.refresh_token = null
+    state.expires_in = null
+    state.isLoggedin = false
   }
-};
+}
 
 const actions = {
   async login({ commit, dispatch }, dataauth) {
     try {
       const {
         data: { user, payload }
-      } = await window.axios.post("/login", dataauth);
-      commit(AUTH_MUTATIONS.SET_USER, user);
-      commit(AUTH_MUTATIONS.SET_PAYLOAD, payload);
-      window.axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${payload.access_token}`;
-      router.push({ name: "dashboard" });
+      } = await axios.post('/login', dataauth)
+      commit(AUTH_MUTATIONS.SET_USER, user)
+      commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
+      router.push({ name: 'dashboard' })
       dispatch(
-        "layout/alertFire",
-        { type: "success", message: "Login sukses!" },
+        'layout/alertFire',
+        { type: 'success', message: 'Login sukses!' },
         { root: true }
-      );
-      console.log("login attempt");
+      )
+      console.log('login attempt')
     } catch (response) {
+      // console.log('error login', {response})
       dispatch(
-        "layout/alertFire",
-        { type: "error", message: response.response.data.message },
+        'layout/alertFire',
+        { type: 'error', message: response.response.data.message },
         { root: true }
-      );
+      )
     }
   },
 
   async refresh({ commit, state }) {
-    const { refresh_token } = state.refresh_token;
-    console.log("refresh token store auth", state.refresh_token);
+    const { refresh_token } = state.refresh_token
+    console.log('refresh token store auth', state.refresh_token)
 
     const {
       data: { payload }
-    } = await this.$axios.post("/refresh", { refresh_token });
-    commit(AUTH_MUTATIONS.SET_PAYLOAD, payload);
+    } = await axios.post('/refresh', { refresh_token })
+    commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
   },
 
   async logout({ commit }) {
-    await window.axios.get("/logout");
-    commit(AUTH_MUTATIONS.LOGOUT);
-    router.push({ name: "login" });
+    await axios.get('/logout')
+    commit(AUTH_MUTATIONS.LOGOUT)
+    router.push({ name: 'login' })
   }
-};
+}
 
 export default {
   namespaced: true,
   state,
   mutations,
   actions
-};
+}

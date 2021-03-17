@@ -10,27 +10,26 @@
   >
     <v-list-item class="px-2">
       <v-list-item-avatar>
-        <v-img
-          :src="
-            user.img_path || `https://ui-avatars.com/api/?name=${user.name}`
-          "
-        ></v-img>
+        <v-img :src="user.img_path || `https://ui-avatars.com/api/?name=${user.name}`" />
       </v-list-item-avatar>
 
       <v-list-item-title>{{ user.email_address }}</v-list-item-title>
 
-      <v-btn icon @click.stop="draw()">
+      <v-btn
+        icon
+        @click.stop="draw()"
+      >
         <v-icon>mdi-chevron-left</v-icon>
       </v-btn>
     </v-list-item>
 
-    <v-divider></v-divider>
+    <v-divider />
 
     <v-list dense>
       <v-list-item
-        color="primary"
         v-for="item in items"
         :key="item.title"
+        color="primary"
         link
         :to="item.link"
       >
@@ -46,11 +45,14 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn @click="logout" color="primary" block dark>
+        <v-btn
+          color="primary"
+          block
+          dark
+          @click="logout"
+        >
           Logout
-          <v-icon>
-            mdi-logout
-          </v-icon>
+          <v-icon> mdi-logout </v-icon>
         </v-btn>
       </div>
     </template>
@@ -59,63 +61,63 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
     items: [
-      { title: "Sensor", icon: "mdi-leak", link: "#" },
-      { title: "Rakit Apung", icon: "mdi-bed-outline", link: "#" },
-      { title: "Tray", icon: "mdi-tray", link: "#" },
-      { title: "Plant", icon: "mdi-sprout-outline", link: "#" },
-      { title: "Users", icon: "mdi-account-group-outline", link: "#" },
+      { title: 'Sensor', icon: 'mdi-leak', link: '#' },
+      { title: 'Rakit Apung', icon: 'mdi-bed-outline', link: '#' },
+      { title: 'Tray', icon: 'mdi-tray', link: '#' },
+      { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
+      { title: 'Users', icon: 'mdi-account-group-outline', link: '#' },
       {
-        title: "Dashboard",
-        icon: "mdi-view-dashboard-outline",
-        link: { name: "dashboard" }
+        title: 'Dashboard',
+        icon: 'mdi-view-dashboard-outline',
+        link: { name: 'dashboard' }
       },
       {
-        title: "My Account",
-        icon: "mdi-account-outline",
-        link: { name: "account" }
+        title: 'My Account',
+        icon: 'mdi-account-outline',
+        link: { name: 'account' }
       }
     ]
   }),
 
   computed: {
-    ...mapState("layout", ["isMobile"]),
-    ...mapState("auth", ["user"]),
+    ...mapState('layout', ['isMobile']),
+    ...mapState('auth', ['user']),
     drawerside: {
-      get() {
-        return this.$store.state.layout.drawerSide;
+      get () {
+        return this.$store.state.layout.drawerSide
       },
-      set(value) {
-        this.$store.commit("layout/setDrawerside", value);
+      set (value) {
+        this.$store.commit('layout/setDrawerside', value)
       }
     },
     mini: {
-      get() {
-        return this.$store.state.layout.mini;
+      get () {
+        return this.$store.state.layout.mini
       },
-      set(value) {
-        this.$store.commit("layout/setMini", value);
+      set (value) {
+        this.$store.commit('layout/setMini', value)
       }
     }
   },
   methods: {
-    draw: function() {
+    draw () {
       if (this.isMobile) {
-        this.drawerside = !this.drawerside;
+        this.drawerside = !this.drawerside
       } else {
-        this.mini = !this.mini;
+        this.mini = !this.mini
       }
     },
-    logout: function() {
-      this.$store.commit("layout/setLoadstate", true);
+    logout () {
+      this.$store.commit('layout/setLoadstate', true)
       this.$store
-        .dispatch("auth/logout")
-        .then(() => this.$store.commit("layout/setLoadstate", false));
+        .dispatch('auth/logout')
+        .then(() => this.$store.commit('layout/setLoadstate', false))
     }
   }
-};
+}
 </script>

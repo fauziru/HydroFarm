@@ -1,9 +1,9 @@
-import Vue from "vue";
-import Vuetify from "vuetify/lib/framework";
-import colors from "vuetify/lib/util/colors";
-import "./style.sass";
+import Vue from 'vue'
+import Vuetify from 'vuetify/lib/framework'
+import colors from 'vuetify/lib/util/colors'
+import './style.sass'
 
-Vue.use(Vuetify);
+Vue.use(Vuetify)
 
 export default new Vuetify({
   theme: {
@@ -16,11 +16,11 @@ export default new Vuetify({
         secondary: colors.lightBlue.lighten1,
         bgGrey: colors.grey.lighten5,
         accent: colors.lightGreen.lighten5,
-        error: "#FF5252",
-        info: "#2196F3",
-        success: "#4CAF50",
-        warning: "#FFC107"
+        error: '#FF5252',
+        info: '#2196F3',
+        success: '#4CAF50',
+        warning: '#FFC107'
       }
     }
   }
-});
+})

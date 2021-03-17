@@ -13,18 +13,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState("layout", ["alert"]),
+    ...mapState('layout', ['alert']),
     alertstate: {
-      get() {
-        return this.$store.state.layout.alert.state;
+      get () {
+        return this.$store.state.layout.alert.state
       },
-      set(value) {
-        this.$store.commit("layout/setAlertState", value);
+      set (value) {
+        this.$store.commit('layout/setAlertState', value)
       }
     }
   }
-};
+}
 </script>

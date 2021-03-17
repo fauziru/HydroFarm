@@ -22,9 +22,9 @@
             outlined
             required
             :error-messages="emailErrors"
-            @input="$v.form.email.$touch"
             clearable
-          ></v-text-field>
+            @input="$v.form.email.$touch"
+          />
           <v-text-field
             v-model="form.password"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -35,19 +35,19 @@
             :error-messages="passErrors"
             @input="$v.form.password.$touch"
             @click:append="showPass = !showPass"
-          ></v-text-field>
+          />
           <!-- <v-checkbox v-model="form.rememberMe" label="Ingat saya"></v-checkbox> -->
           <v-btn
-            @click="loginAttemp"
-            @keypress.enter="loginAttemp"
-            @keydown.enter="loginAttemp"
-            @keyup.enter="loginAttemp"
             block
             is-elevated
             has-bg
             x-large
             color="primary"
             :disabled="loadState"
+            @click="loginAttemp"
+            @keypress.enter="loginAttemp"
+            @keydown.enter="loginAttemp"
+            @keyup.enter="loginAttemp"
           >
             <div v-if="!loadState">
               Masuk
@@ -64,18 +64,16 @@
       <a href="#">Daftar</a>
     </div>
     <div class="overline mt-4 text-center">
-      <a href="https://github.com/fauziru">
-        @fauziru
-      </a>
+      <a href="https://github.com/fauziru"> @fauziru </a>
     </div>
   </div>
   <!-- sigin modul, register, reset pass word, verify password -->
 </template>
 
 <script>
-import { mapState } from "vuex";
-import Loader from "@/components/ProgressCircle.vue";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { mapState } from 'vuex'
+import Loader from '@/components/ProgressCircle.vue'
+import { required, minLength, email } from 'vuelidate/lib/validators'
 
 export default {
   components: {
@@ -84,8 +82,8 @@ export default {
   data: () => ({
     showPass: false,
     form: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       rememberMe: false
     }
   }),
@@ -102,41 +100,41 @@ export default {
     }
   },
   computed: {
-    ...mapState("layout", ["loadState"]),
-    emailErrors() {
-      const errors = [];
-      if (!this.$v.form.email.$dirty) return errors;
-      !this.$v.form.email.required && errors.push("email dibutuhkan!");
-      !this.$v.form.email.email && errors.push("masukan email yang benar!");
-      return errors;
+    ...mapState('layout', ['loadState']),
+    emailErrors () {
+      const errors = []
+      if (!this.$v.form.email.$dirty) return errors
+      !this.$v.form.email.required && errors.push('email dibutuhkan!')
+      !this.$v.form.email.email && errors.push('masukan email yang benar!')
+      return errors
     },
-    passErrors() {
-      const errors = [];
-      if (!this.$v.form.password.$dirty) return errors;
-      !this.$v.form.password.required && errors.push("Password dibutuhkan!");
+    passErrors () {
+      const errors = []
+      if (!this.$v.form.password.$dirty) return errors
+      !this.$v.form.password.required && errors.push('Password dibutuhkan!')
       !this.$v.form.password.minLength &&
-        errors.push("Password minimal harus 8 karakter!");
-      return errors;
+        errors.push('Password minimal harus 8 karakter!')
+      return errors
     }
   },
   methods: {
-    loginAttemp() {
+    loginAttemp () {
       if (this.$v.form.$invalid) {
-        this.$store.dispatch("layout/alertFire", {
-          type: "error",
-          message: "Data email dan Password harus diisi!"
-        });
+        this.$store.dispatch('layout/alertFire', {
+          type: 'error',
+          message: 'Data email dan Password harus diisi!'
+        })
       } else {
-        this.loadstate(true);
-        console.log("login", this.form);
-        this.$store.dispatch("auth/login", this.form).then(() => {
-          this.loadstate(false);
-        });
+        this.loadstate(true)
+        console.log('login', this.form)
+        this.$store.dispatch('auth/login', this.form).then(() => {
+          this.loadstate(false)
+        })
       }
     },
-    loadstate: function(state) {
-      this.$store.commit("layout/setLoadstate", state);
+    loadstate: function (state) {
+      this.$store.commit('layout/setLoadstate', state)
     }
   }
-};
+}
 </script>

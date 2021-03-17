@@ -3,5 +3,5 @@
     :width="3"
     color="accent"
     indeterminate
-  ></v-progress-circular>
+  />
 </template>

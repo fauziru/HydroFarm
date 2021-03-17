@@ -1,14 +1,26 @@
 <template>
   <div>
-    <v-tabs-items v-model="tab">
+    <v-tabs-items
+      v-model="tab"
+      class="rounded-xl"
+    >
       <v-tab-item>
-        All
+        <notification-list
+          v-if="tab === 0"
+          section="all"
+        />
       </v-tab-item>
       <v-tab-item>
-        Sensor
+        <notification-list
+          v-if="tab === 1"
+          section="all"
+        />
       </v-tab-item>
       <v-tab-item>
-        Activity
+        <notification-list
+          v-if="tab === 2"
+          section="all"
+        />
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -16,9 +28,14 @@
 
 <script>
 // import { mapState } from "vuex";
+import NotificationList from '../components/NotificationList.vue'
+
 export default {
+  components: {
+    NotificationList
+  },
   data: () => ({
-    tabItem: [{ title: 'All' }, { title: 'Sensor' }, { title: 'Activity' }]
+    tabItem: [{ title: 'all' }, { title: 'sensor' }, { title: 'sensor' }]
   }),
   computed: {
     tab: {
@@ -31,7 +48,7 @@ export default {
     }
   },
   created () {
-    console.log('cerated notification')
+    console.log('created notification')
     this.$store.commit('layout/setTabs', this.tabItem)
     this.$store.commit('layout/setTab', true)
   },

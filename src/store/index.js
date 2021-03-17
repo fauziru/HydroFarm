@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex, { createLogger } from 'vuex'
 import auth from './auth'
 import layout from './layout'
+import notification from './notification'
 import createPersistedState from 'vuex-persistedstate'
 import Cookies from 'js-cookie'
 
@@ -23,7 +24,8 @@ const state = createPersistedState({
 export default new Vuex.Store({
   modules: {
     layout,
-    auth
+    auth,
+    notification
   },
   strict: debug,
   plugins: debug ? [createLogger(), state] : [state]

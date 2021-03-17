@@ -1,3 +1,4 @@
+/* eslint-disable */
 import axios from '../plugins/vueaxios'
 import router from '../router'
 
@@ -6,6 +7,7 @@ const AUTH_MUTATIONS = {
   SET_PAYLOAD: 'SET_PAYLOAD',
   LOGOUT: 'LOGOUT'
 }
+
 const state = () => ({
   isLoggedin: false,
   access_token: null, // JWT access token
@@ -18,7 +20,7 @@ const state = () => ({
 
 const mutations = {
   // store the logged in user in the state
-  [AUTH_MUTATIONS.SET_USER](state, user) {
+  [AUTH_MUTATIONS.SET_USER] (state, user) {
     state.id = user.id
     state.email_address = user.email_address
     state.user = user
@@ -26,7 +28,7 @@ const mutations = {
   },
 
   // store new or updated token fields in the state
-  [AUTH_MUTATIONS.SET_PAYLOAD](
+  [AUTH_MUTATIONS.SET_PAYLOAD] (
     state,
     { access_token, expires_in, refresh_token = null }
   ) {
@@ -39,7 +41,7 @@ const mutations = {
   },
 
   // clear our the state, essentially logging out the user
-  [AUTH_MUTATIONS.LOGOUT](state, force = null) {
+  [AUTH_MUTATIONS.LOGOUT] (state, force = null) {
     if (force) {
       window.axios.defaults.headers.common[
         'Authorization'
@@ -56,7 +58,7 @@ const mutations = {
 }
 
 const actions = {
-  async login({ commit, dispatch }, dataauth) {
+  async login ({ commit, dispatch }, dataauth) {
     try {
       const {
         data: { user, payload }
@@ -80,7 +82,7 @@ const actions = {
     }
   },
 
-  async refresh({ commit, state }) {
+  async refresh ({ commit, state }) {
     const { refresh_token } = state.refresh_token
     console.log('refresh token store auth', state.refresh_token)
 
@@ -90,7 +92,7 @@ const actions = {
     commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
   },
 
-  async logout({ commit }) {
+  async logout ({ commit }) {
     await axios.get('/logout')
     commit(AUTH_MUTATIONS.LOGOUT)
     router.push({ name: 'login' })

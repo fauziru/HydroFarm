@@ -26,7 +26,7 @@
 
     <v-fab-transition>
       <v-btn
-        v-if="this.$route.meta.backButton && isMobile"
+        v-if="false"
         color="secondary"
         elevation="2"
         fixed
@@ -34,7 +34,6 @@
         small
         right
         bottom
-        @click="hasHistory() ? $router.go(-1) : $router.push('/')"
       >
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
@@ -67,10 +66,6 @@ export default {
   computed: {
     ...mapState('layout', ['isMobile', 'drawerSide'])
   },
-  methods: {
-    hasHistory () {
-      return window.history.length > 2
-    }
-  }
+  methods: {}
 }
 </script>

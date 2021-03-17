@@ -45,25 +45,7 @@ Vue.filter('typeNotif', function (section, attribute) {
       type: 'AppNotificationsNutrisiKurang',
       title: 'Nutrisi Kurang',
       icon: 'mdi-leak',
-      color: 'red'
-    },
-    {
-      type: 'AppNotificationsMessageMasuk',
-      title: 'Message',
-      icon: 'fas fa-envelope',
-      color: 'bg-warning'
-    },
-    {
-      type: 'AppNotificationsReviewMasuk',
-      title: 'Review',
-      icon: 'far fa-edit',
-      color: 'bg-danger'
-    },
-    {
-      type: 'AppNotificationsAdminActivity',
-      title: 'Admin Activity',
-      icon: 'fas fa-user-cog',
-      color: 'bg-primary'
+      color: 'green'
     }
   ]
   section = section.replace(/\\/g, '')
@@ -71,6 +53,6 @@ Vue.filter('typeNotif', function (section, attribute) {
   return item[0][attribute]
 })
 
-Vue.filter('truncate', function(text, length, suffix) {
+Vue.filter('truncate', function (text, length, suffix) {
   return text.length > length ? text.substring(0, length) + suffix : text
 })

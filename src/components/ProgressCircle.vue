@@ -1,7 +1,7 @@
 <template>
   <v-progress-circular
     :width="3"
-    color="accent"
+    color="primary"
     indeterminate
   />
 </template>

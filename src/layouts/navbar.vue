@@ -7,7 +7,19 @@
     app
     :dark="dark"
   >
-    <v-app-bar-nav-icon @click.stop="draw()" />
+    <v-btn
+      v-if="this.$route.meta.backButton"
+      icon
+      depressed
+      link
+      @click="hasHistory() ? $router.go(-1) : $router.push('/')"
+    >
+      <v-icon>mdi-arrow-left</v-icon>
+    </v-btn>
+    <v-app-bar-nav-icon
+      v-else
+      @click.stop="draw()"
+    />
     <v-img
       alt="Vuetify Logo"
       class="shrink mr-2"
@@ -17,7 +29,10 @@
       width="40"
     />
     <v-spacer />
-
+    <v-toolbar-title
+      class="text-capitalize mr-6"
+      v-text="this.$route.name"
+    />
     <!-- menu navbar -->
     <v-menu
       v-if="!isMobile"
@@ -76,14 +91,15 @@
 
     <!-- notification -->
     <v-menu
+      v-if="notifUnread"
       left
       offset-y
     >
       <template v-slot:activator="{ on, attrs }">
         <div>
           <v-badge
-            :content="notif.length"
-            :value="notif.length"
+            :content="notifUnread.length"
+            :value="notifUnread.length"
             color="primary"
             offset-x="22"
             offset-y="22"
@@ -123,12 +139,13 @@
             Notifikasi
           </v-subheader>
           <!-- component notifi list -->
-          <div v-if="notif.length">
+          <div v-if="notifUnread.length">
             <v-list-item
-              v-for="(item, i) in notif"
+              v-for="(item, i) in notifUnread"
               :key="i"
               :to="item.data.link || { name: 'notification' }"
               link
+              @click="readNotif(item.id)"
             >
               <v-list-item-avatar color="light-green lighten-4">
                 <v-icon color="green">
@@ -173,6 +190,9 @@
         </v-list>
       </v-card>
     </v-menu>
+    <div class="text-center mr-1">
+      <Loader v-if="!notifUnread" />
+    </div>
 
     <template
       v-if="tabs"
@@ -196,16 +216,19 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import Loader from '@/components/ProgressCircle.vue'
+
 export default {
+  components: {
+    Loader
+  },
   data: () => ({
-    text:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
     bg: 'secondary',
-    dark: true,
-    notif: []
+    dark: true
   }),
   computed: {
-    ...mapState('layout', ['isMobile', 'drawerSide', 'tabs']),
+    ...mapState('layout', ['isMobile', 'drawerSide', 'tabs', 'loadState']),
+    ...mapState('notification', ['notifUnread']),
     tab: {
       get () {
         return this.$store.state.layout.tab
@@ -217,25 +240,17 @@ export default {
   },
   created () {
     this.getUnreadnotif()
+    window.addEventListener('scroll', this.changeColor)
   },
   mounted () {
-    window.onscroll = () => {
-      this.changeColor()
-    }
+    console.log('notif unread on navbar', this.notifUnread)
+  },
+  destroyed () {
+    window.removeEventListener('scroll', this.changeColor)
   },
   methods: {
     ...mapActions('layout', ['draw']),
-    async getUnreadnotif () {
-      console.log('get notif')
-      try {
-        const {
-          data: { data }
-        } = await this.axios.get('/notification/unread')
-        this.notif = data
-      } catch (error) {
-        console.log('error', { error })
-      }
-    },
+    ...mapActions('notification', ['readNotif', 'getUnreadnotif']),
     changeColor () {
       if (
         document.body.scrollTop > 70 ||
@@ -247,6 +262,9 @@ export default {
         this.bg = 'secondary'
         this.dark = true
       }
+    },
+    hasHistory () {
+      return window.history.length > 2
     }
   }
 }

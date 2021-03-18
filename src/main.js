@@ -8,6 +8,7 @@ import store from './store'
 import axios from './plugins/vueaxios'
 import vuetify from './plugins/vuetify'
 import vuelidate from './plugins/vuelidate'
+import vueapexcharts from './plugins/vueapexcharts'
 import './registerServiceWorker'
 // import Echo from "laravel-echo";
 
@@ -33,5 +34,6 @@ new Vue({
   vuetify,
   axios,
   vuelidate,
+  vueapexcharts,
   render: h => h(App)
 }).$mount('#app')

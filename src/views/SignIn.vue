@@ -1,7 +1,11 @@
 <template>
   <!-- sigin modul, register, reset pass word, verify password -->
   <div class="w-full">
-    <v-card class="text-center pa-1">
+    <v-card
+      class="text-center pa-1"
+      rounded="xl"
+      elevation="0"
+    >
       <v-card-title class="justify-center dispay-1 mb-2">
         <v-img
           :src="require('../assets/logo.png')"

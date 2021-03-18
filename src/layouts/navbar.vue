@@ -92,11 +92,12 @@
     <!-- notification -->
     <v-menu
       v-if="notifUnread"
-      left
+      nudge-left
       offset-y
+      z-index="12"
     >
       <template v-slot:activator="{ on, attrs }">
-        <div>
+        <div style="margin-right: -15px">
           <v-badge
             :content="notifUnread.length"
             :value="notifUnread.length"
@@ -168,7 +169,7 @@
           <!-- if nothing -->
           <div v-else>
             <div class="text-center primary--text">
-              Belum ada notifikasi
+              Belum ada notifikasi terbaru
             </div>
             <v-img
               :src="require('../assets/images/logoNotif.png')"
@@ -181,6 +182,7 @@
           <div class="text-center py-2">
             <v-btn
               :to="{ name: 'notification' }"
+              color="primary"
               small
             >
               Lihat Semua

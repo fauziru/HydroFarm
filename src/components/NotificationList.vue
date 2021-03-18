@@ -22,6 +22,7 @@
             color="red lighten-1"
             offset-x="22"
             offset-y="22"
+            style="margin-left: -15px"
             dot
           >
             <v-list-item-avatar color="light-green lighten-5">
@@ -94,7 +95,6 @@ export default {
   beforeMount () {
     console.log('to top')
     window.scrollTo(0, 0)
-    console.log('on tab', this.tabs[this.tab].title)
   },
   beforeDestroy () {
     // this.section = null

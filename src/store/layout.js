@@ -1,3 +1,6 @@
+const LAYOUT_MUTATIONS = {
+  SET_TAB: 'SET_TAB'
+}
 const state = () => ({
   isMobile: false,
   drawerSide: null,
@@ -13,11 +16,12 @@ const state = () => ({
 })
 
 const mutations = {
+  [LAYOUT_MUTATIONS.SET_TAB] (state, { tab, tabs }) {
+    state.tab = tab
+    state.tabs = tabs
+  },
   setTab (state, bool) {
     state.tab = bool
-  },
-  setTabs (state, payload) {
-    state.tabs = payload
   },
   setIsmobile (state, bool) {
     state.isMobile = bool

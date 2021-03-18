@@ -49,12 +49,10 @@ export default {
   },
   created () {
     console.log('created notification')
-    this.$store.commit('layout/setTabs', this.tabItem)
-    this.$store.commit('layout/setTab', true)
+    this.$store.commit('layout/SET_TAB', { tab: true, tabs: this.tabItem })
   },
   beforeDestroy () {
-    this.$store.commit('layout/setTabs', null)
-    this.$store.commit('layout/setTab', null)
+    this.$store.commit('layout/SET_TAB', { tab: null, tabs: null })
   }
 }
 </script>

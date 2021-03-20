@@ -12,7 +12,24 @@ const state = () => ({
     state: false
   },
   tabs: '',
-  tab: null
+  tab: null,
+  menuBar: [
+    {
+      name: 'Dashboard',
+      icon: 'mdi-view-dashboard',
+      link: { name: 'dashboard' }
+    },
+    {
+      name: 'Activity',
+      icon: 'mdi-history',
+      link: { name: 'activity' }
+    },
+    {
+      name: 'Schedule',
+      icon: 'mdi-sprout',
+      link: { name: 'schedule' }
+    }
+  ]
 })
 
 const mutations = {
@@ -45,9 +62,6 @@ const mutations = {
 }
 
 const actions = {
-  // drawSide({ commit }, bool) {
-  //   commit("setDrawerside", bool);
-  // },
   mobileBreak ({ commit }, bool) {
     commit('setIsmobile', bool)
     if (!bool) {
@@ -55,11 +69,13 @@ const actions = {
       console.log('desktop')
     }
   },
+
   draw ({ commit, state }) {
     state.isMobile
       ? commit('setDrawerside', !state.drawSide)
       : commit('setMini', !state.mini)
   },
+
   alertFire ({ commit }, item) {
     commit('setAlert', item)
     commit('setAlertState', true)
@@ -68,6 +84,7 @@ const actions = {
       commit('setAlert', { type: '', message: '' })
     }, 2000)
   },
+
   renderLayout ({ commit }, payload) {
     commit('setLayout', payload)
   }

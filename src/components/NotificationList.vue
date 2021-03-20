@@ -1,9 +1,6 @@
 <template>
   <div>
-    <v-list
-      v-if="notifications"
-      three-line
-    >
+    <v-list three-line>
       <v-subheader
         v-if="!loadState"
         class="text-capitalize"
@@ -34,7 +31,7 @@
 
           <v-list-item-content>
             <v-list-item-title> {{ item.type | typeNotif('title') }} </v-list-item-title>
-            <v-list-item-subtitle v-text="item.data.data" />
+            <v-list-item-subtitle v-html="item.data.data" />
           </v-list-item-content>
           <v-list-item-action class="align-self-center">
             <v-list-item-action-text>
@@ -49,20 +46,25 @@
       </template>
       <div class="text-center mt-2">
         <Loader v-if="loadState" />
+        <div v-if="!loadState && notifications.length === 0">
+          <div class="text-center primary--text">
+            Belum ada notifikasi
+          </div>
+          <v-img
+            :src="require('../assets/images/logoNotif.png')"
+            class="my-3"
+            contain
+            height="120"
+          />
+        </div>
       </div>
     </v-list>
-    <div v-else>
-      <div class="text-center primary--text">
-        Belum ada notifikasi
-      </div>
-      <v-img
-        :src="require('../assets/images/logoNotif.png')"
-        class="my-3"
-        contain
-        height="120"
-      />
+    <div
+      v-if="maxPage"
+      class="text-center primary--text"
+    >
+      . . .
     </div>
-    <!-- <div v-scroll="infiniteLoad" /> -->
   </div>
 </template>
 

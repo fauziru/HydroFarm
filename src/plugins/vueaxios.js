@@ -24,7 +24,11 @@ axios.interceptors.request.use(
 )
 
 axios.interceptors.response.use(undefined, function (error) {
-  console.log('on response error axios', error.response.status)
+  if (!error.response) {
+    console.log('Jaringan Terputus')
+    store.dispatch('layout/alertFire', { type: 'error', message: 'Jaringan terputus!' })
+  }
+  console.log('on response error axios', error.response.status, error.config, error.config.__isRetryRequest)
   const IGNORED_PATHS = ['/login', '/logout', '/refresh']
   return new Promise(() => {
     const isIgnored = IGNORED_PATHS.some(path =>
@@ -36,6 +40,7 @@ axios.interceptors.response.use(undefined, function (error) {
       !error.config.__isRetryRequest &&
       !isIgnored
     ) {
+      console.log('force logout')
       store.commit('auth/LOGOUT', true)
       router.push({ name: 'login' })
     }

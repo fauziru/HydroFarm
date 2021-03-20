@@ -12,7 +12,7 @@
         shift
       >
         <v-btn
-          v-for="(item, index) in itemBottombar"
+          v-for="(item, index) in menuBar"
           :key="index"
           :to="item.link"
         >
@@ -44,27 +44,8 @@
 <script>
 import { mapState } from 'vuex'
 export default {
-  data: () => ({
-    itemBottombar: [
-      {
-        name: 'Dashboard',
-        icon: 'mdi-view-dashboard',
-        link: { name: 'dashboard' }
-      },
-      {
-        name: 'Activity',
-        icon: 'mdi-history',
-        link: { name: 'activity' }
-      },
-      {
-        name: 'Schedule',
-        icon: 'mdi-sprout',
-        link: { name: 'schedule' }
-      }
-    ]
-  }),
   computed: {
-    ...mapState('layout', ['isMobile', 'drawerSide'])
+    ...mapState('layout', ['isMobile', 'drawerSide', 'menuBar'])
   },
   methods: {}
 }

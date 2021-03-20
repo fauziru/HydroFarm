@@ -2,7 +2,7 @@
   <div>
     <v-tabs-items
       v-model="tab"
-      class="rounded-xl"
+      class="rounded-xl elevation-1"
     >
       <v-tab-item>
         <notification-list
@@ -13,13 +13,13 @@
       <v-tab-item>
         <notification-list
           v-if="tab === 1"
-          section="all"
+          section="sensor"
         />
       </v-tab-item>
       <v-tab-item>
         <notification-list
           v-if="tab === 2"
-          section="all"
+          section="activity"
         />
       </v-tab-item>
     </v-tabs-items>
@@ -35,7 +35,7 @@ export default {
     NotificationList
   },
   data: () => ({
-    tabItem: [{ title: 'all' }, { title: 'sensor' }, { title: 'sensor' }]
+    tabItem: [{ title: 'all' }, { title: 'sensor' }, { title: 'activity' }]
   }),
   computed: {
     tab: {

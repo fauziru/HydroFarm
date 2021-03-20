@@ -6,7 +6,8 @@
     elevation="1"
     :type="alert.type || 'error'"
     transition="fade-transition"
-    style="z-index: 9999"
+    class="ma-5"
+    style="z-index: 9999; position: fixed;"
   >
     {{ alert.message }}
   </v-alert>

@@ -53,37 +53,22 @@
       </template>
 
       <v-card class="d-flex flex-row flex-wrap">
-        <div class="app-title pa-3 text-center">
+        <div
+          v-for="(item, index) in menuBar"
+          :key="index"
+          tile
+          class="app-tile pa-3 text-center"
+          :to="item.link"
+          link
+        >
           <v-icon color="primary">
-            mdi-view-grid-outline
+            {{ item.icon }}
           </v-icon>
           <div class="font-weight-bold mt-1">
-            Menu 1
+            {{ item.name }}
           </div>
           <div class="caption">
-            SubMenu 1
-          </div>
-        </div>
-        <div class="app-title pa-3 text-center">
-          <v-icon color="primary">
-            mdi-view-grid-outline
-          </v-icon>
-          <div class="font-weight-bold mt-1">
-            Menu 1
-          </div>
-          <div class="caption">
-            SubMenu 1
-          </div>
-        </div>
-        <div class="app-title pa-3 text-center">
-          <v-icon color="primary">
-            mdi-view-grid-outline
-          </v-icon>
-          <div class="font-weight-bold mt-1">
-            Menu 1
-          </div>
-          <div class="caption">
-            SubMenu 1
+            {{ item.name }}
           </div>
         </div>
       </v-card>
@@ -155,9 +140,10 @@
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>Notifikasi</v-list-item-title>
-                <v-list-item-subtitle caption>
-                  {{ item.data.data | truncate(50, '...') }}
-                </v-list-item-subtitle>
+                <v-list-item-subtitle
+                  caption
+                  v-html="item.data.data"
+                />
               </v-list-item-content>
               <v-list-item-action class="align-self-center">
                 <v-list-item-action-text>
@@ -238,6 +224,13 @@ export default {
       set (value) {
         this.$store.commit('layout/setTab', value)
       }
+    },
+    menuBar: {
+      get () {
+        return this.$store.state.layout.menuBar
+      },
+      set (value) {
+      }
     }
   },
   created () {
@@ -251,7 +244,7 @@ export default {
     window.removeEventListener('scroll', this.changeColor)
   },
   methods: {
-    ...mapActions('layout', ['draw']),
+    ...mapActions('layout', ['draw', 'menuBar']),
     ...mapActions('notification', ['readNotif', 'getUnreadnotif']),
     changeColor () {
       if (

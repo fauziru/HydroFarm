@@ -46,6 +46,12 @@ Vue.filter('typeNotif', function (section, attribute) {
       title: 'Nutrisi Kurang',
       icon: 'mdi-leak',
       color: 'green'
+    },
+    {
+      type: 'AppNotificationsAdminActivity',
+      title: 'Activity',
+      icon: 'mdi-history',
+      color: 'blue lighten-1'
     }
   ]
   section = section.replace(/\\/g, '')

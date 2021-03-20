@@ -6,6 +6,7 @@
     overlay-color="lime lighten-5"
     :temporary="isMobile"
     color="bgGrey"
+    class="elevation-1"
     app
   >
     <v-list-item class="px-2">
@@ -49,10 +50,14 @@
           color="primary"
           block
           dark
+          :disabled="loadState"
           @click="logout"
         >
-          Logout
-          <v-icon> mdi-logout </v-icon>
+          <div v-if="!loadState">
+            Logout
+            <v-icon> mdi-logout </v-icon>
+          </div>
+          <Loader v-else />
         </v-btn>
       </div>
     </template>
@@ -62,30 +67,27 @@
 
 <script>
 import { mapState } from 'vuex'
+import Loader from '@/components/ProgressCircle.vue'
 
 export default {
+  components: {
+    Loader
+  },
   data: () => ({
     items: [
-      { title: 'Sensor', icon: 'mdi-leak', link: '#' },
+      { title: 'Sensor', icon: 'mdi-leak', link: { name: 'sensor' } },
       { title: 'Rakit Apung', icon: 'mdi-bed-outline', link: '#' },
       { title: 'Tray', icon: 'mdi-tray', link: '#' },
       { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
       { title: 'Users', icon: 'mdi-account-group-outline', link: '#' },
-      {
-        title: 'Dashboard',
-        icon: 'mdi-view-dashboard-outline',
-        link: { name: 'dashboard' }
-      },
-      {
-        title: 'My Account',
-        icon: 'mdi-account-outline',
-        link: { name: 'account' }
-      }
+      { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', link: { name: 'dashboard' } },
+      { title: 'My Account', icon: 'mdi-account-outline', link: { name: 'account' } },
+      { title: 'Settings', icon: 'mdi-cog-outline', link: '#' }
     ]
   }),
 
   computed: {
-    ...mapState('layout', ['isMobile']),
+    ...mapState('layout', ['isMobile', 'loadState']),
     ...mapState('auth', ['user']),
     drawerside: {
       get () {

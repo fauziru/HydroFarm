@@ -7,61 +7,94 @@
       >
         <!-- widget sensor -->
         <v-card
-          class="d-flex flex-grow-1 h-full"
+          class="d-flex flex-grow-1 h-full elevation-1"
           color="white"
           rounded="xl"
           min-height="380"
-          elevation="0"
         >
           <div
             class="d-flex flex-column flex-grow-1"
             style="position: relative;"
           >
-            <v-card-title>
+            <v-card-title v-if="!loadState">
               <div>
-                Sensor Nutrisi 1
+                <!-- mock -->
+                Sensor {{ sensorData.name_sensor }} &mdash;
+                <span class="caption">
+                  {{ sensorData.last_read }}
+                </span>
               </div>
               <v-spacer />
-              <v-btn
-                class="primary--text"
-                text
-              >
-                Sensor
-              </v-btn>
+              <!-- menu -->
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <!-- button -->
+                  <v-btn
+                    class="primary--text"
+                    text
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-leak</v-icon>
+                    <div class="ml-1">
+                      Sensor
+                    </div>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in optionsSensor"
+                    :key="index"
+                    @click="changeWidget(item.id)"
+                  >
+                    <v-list-item-title>{{ item.name_sensor }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-card-title>
-            <div class="px-4 pb-4">
-              <div class="d-flex align-center">
-                <div class="text-h4 primary--text">
-                  <!-- mock -->
-                  985 ppm
-                </div>
-                <v-spacer />
-                <div class="d-flex flex-column text-right">
-                  <div class="font-weight-bold">
-                    <span>
-                      <span class="warning--text">
-                        <v-icon color="warning">mdi-waves</v-icon>
-                        <!-- mock -->
-                        900ppm
+            <div v-if="series[0].data.length > 0 && !loadState">
+              <div class="px-4 pb-4">
+                <div class="d-flex align-center">
+                  <div class="text-h4 primary--text">
+                    <!-- mock -->
+                    {{ lastRead }} ppm
+                  </div>
+                  <v-spacer />
+                  <div class="d-flex flex-column text-right">
+                    <div class="font-weight-bold">
+                      <span>
+                        <span class="warning--text">
+                          <v-icon color="warning">mdi-dots-hexagon</v-icon>
+                          <!-- mock -->
+                          {{ sensorData.min_nutrisi }}ppm
+                        </span>
                       </span>
-                    </span>
-                  </div>
-                  <div class="caption">
-                    Minimal Nutrisi
+                    </div>
+                    <div class="caption">
+                      Minimal Nutrisi
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div style="min-height: 120px;">
-              <div id="chart">
-                <apexchart
-                  type="area"
-                  height="350"
-                  :options="chartOptions"
-                  :series="series"
-                />
+              <div style="min-height: 120px;">
+                <div id="chart">
+                  <apexchart
+                    type="area"
+                    height="350"
+                    :options="chartOptions"
+                    :series="series"
+                  />
+                </div>
               </div>
             </div>
+            <!-- if nothing -->
+            <div
+              v-else-if="loadState"
+              class="text-center my-auto"
+            >
+              <Loader />
+            </div>
+            <if-nothing v-else />
           </div>
         </v-card>
         <!-- /widget sensor -->
@@ -74,22 +107,33 @@
 // @ is an alias to /src
 import { mapState } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
+import DataNotFound from '@/components/DataNotFound.vue'
+import Loader from '@/components/ProgressCircle.vue'
 
 export default {
   components: {
-    apexchart: VueApexCharts
+    apexchart: VueApexCharts,
+    'if-nothing': DataNotFound,
+    Loader
   },
   data: () => ({
-    series: [
-      {
-        name: 'Nutris (ppm)',
-        data: [31, 40, 28, 51, 42, 109, 100]
-      }
-    ],
+    defaultSensorWidget: 1,
+    optionsSensor: [],
+    sensorData: {},
+    series: [{
+      name: 'Nutrisi (ppm)',
+      data: []
+    }],
     chartOptions: {
       chart: {
         height: 350,
-        type: 'area'
+        type: 'area',
+        toolbar: {
+          show: false
+        },
+        zoom: {
+          enabled: false
+        }
       },
       colors: ['#7cb342'],
       dataLabels: {
@@ -100,25 +144,55 @@ export default {
       },
       xaxis: {
         type: 'datetime',
-        categories: [
-          '2018-09-19T00:00:00.000Z',
-          '2018-09-19T01:30:00.000Z',
-          '2018-09-19T02:30:00.000Z',
-          '2018-09-19T03:30:00.000Z',
-          '2018-09-19T04:30:00.000Z',
-          '2018-09-19T05:30:00.000Z',
-          '2018-09-19T06:30:00.000Z'
-        ]
+        categories: []
       },
       tooltip: {
         x: {
-          format: 'dd/MM/yy HH:mm'
+          format: 'dd/MM/yy HH:mm:ss'
         }
       }
     }
   }),
   computed: {
-    ...mapState('layout', ['isMobile'])
+    ...mapState('layout', ['isMobile', 'loadState']),
+    lastRead: {
+      get () {
+        return this.series[0].data.slice(0).splice(-1, 1).toString()
+      }
+    }
+  },
+  created () {
+    this.initialize()
+  },
+  methods: {
+    initialize () {
+      this.loadstate(true)
+      this.axios.get('sensor/option')
+        .then(response => {
+          this.optionsSensor = response.data.data
+        })
+      this.axios.get(`sensor-nutrisi/widget/${this.defaultSensorWidget}`)
+        .then(response => {
+          const data = response.data.data
+          console.log('widget data', data)
+          this.series[0].data = data.series_data
+          this.sensorData = data.sensor_data
+          this.chartOptions.xaxis.categories = data.categories_data
+          console.log('sensor data', this.sensorData)
+          this.loadstate(false)
+        })
+    },
+    changeWidget (id) {
+      console.log('change to id', id)
+      this.defaultSensorWidget = id
+      this.series[0].data = []
+      this.sensorData = {}
+      this.chartOptions.xaxis.categories = []
+      this.initialize()
+    },
+    loadstate (state) {
+      this.$store.commit('layout/setLoadstate', state)
+    }
   }
 }
 </script>

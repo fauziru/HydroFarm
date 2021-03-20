@@ -41,6 +41,12 @@ const routes = [
     name: 'notification',
     component: () => import('../views/Notification.vue'),
     meta: { requiresAuth: true, backButton: true }
+  },
+  {
+    path: '/sensor',
+    name: 'sensor',
+    component: () => import('../views/Sensor.vue'),
+    meta: { requiresAuth: true, backButton: true }
   }
 ]
 

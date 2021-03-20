@@ -8,7 +8,7 @@
       color="primary"
       reverse
       fixed
-      style="z-index: 10"
+      style="z-index: 14"
     />
     <Alert />
     <Sidebar v-if="isLoggedin" />
@@ -103,5 +103,14 @@ export default {
 }
 .bg-wave {
   background-image: url('~@/assets/images/wave.svg');
+}
+.v-application .elevation-1 {
+  box-shadow: 0 3px 10px -2px rgb(85 85 85 / 8%), 0 2px 20px 0 rgb(85 85 85 / 6%), 0 1px 30px 0 rgb(85 85 85 / 3%) !important;
+}
+.v-navigation-drawer {
+  z-index: 13 !important;
+}
+.v-app-bar {
+  z-index: 12 !important;
 }
 </style>

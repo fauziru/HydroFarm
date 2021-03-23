@@ -2,6 +2,7 @@ const LAYOUT_MUTATIONS = {
   SET_TAB: 'SET_TAB'
 }
 const state = () => ({
+  isOffline: false,
   isMobile: false,
   drawerSide: null,
   mini: false,
@@ -58,6 +59,9 @@ const mutations = {
   },
   setAlertState (state, bool) {
     state.alert.state = bool
+  },
+  setOffline (state, bool) {
+    state.isOffline = bool
   }
 }
 

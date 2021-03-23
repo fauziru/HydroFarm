@@ -47,6 +47,12 @@ const routes = [
     name: 'sensor',
     component: () => import('../views/Sensor.vue'),
     meta: { requiresAuth: true, backButton: true }
+  },
+  {
+    path: '/offline',
+    name: 'offline',
+    component: () => import('../views/Offline.vue'),
+    meta: { requiresAuth: true, isOffline: true }
   }
 ]
 
@@ -60,7 +66,18 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('login dulu', Store.state.auth.isLoggedin)
+  console.log('is offline middleware', Store.state.layout.isOffline)
+  if (to.matched.some(record => record.meta.isOffline)) {
+    if (Store.state.layout.isOffline) {
+      console.log('go to offline page')
+      next()
+    } else {
+      // back
+      console.log('back')
+      next({ name: 'dashboard' })
+    }
+  }
+  console.log('login middleware', Store.state.auth.isLoggedin)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!Store.state.auth.isLoggedin) {
       next({

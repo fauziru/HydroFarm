@@ -15,6 +15,7 @@ axios.interceptors.request.use(
     const token = store.state.auth.access_token
     console.log('on request axios', token)
     if (token) config.headers.Authorization = `Bearer ${token}`
+    store.commit('layout/setOffline', false)
     return config
   },
   function (error) {
@@ -27,6 +28,8 @@ axios.interceptors.response.use(undefined, function (error) {
   if (!error.response) {
     console.log('Jaringan Terputus')
     store.dispatch('layout/alertFire', { type: 'error', message: 'Jaringan terputus!' })
+    router.push({ name: 'offline' })
+    store.commit('layout/setOffline', true)
   }
   console.log('on response error axios', error.response.status, error.config, error.config.__isRetryRequest)
   const IGNORED_PATHS = ['/login', '/logout', '/refresh']

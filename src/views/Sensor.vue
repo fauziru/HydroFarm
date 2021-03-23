@@ -37,13 +37,19 @@
                   <v-row>
                     <v-text-field
                       v-model="editedItem.name_sensor"
+                      outlined
+                      :error-messages="nameErrors"
                       label="Sensor name"
+                      @input="$v.editedItem.name_sensor.$touch"
                     />
                   </v-row>
                   <v-row>
                     <v-text-field
                       v-model="editedItem.min_nutrisi"
+                      outlined
+                      :error-messages="minnutrErrors"
                       label="Min. Nutrisi"
+                      @input="$v.editedItem.min_nutrisi.$touch"
                     />
                   </v-row>
                 </v-form>
@@ -223,24 +229,40 @@ export default {
     defaultItem: {
       name_sensor: '',
       min_nutrisi: 0
-    },
-    validations: {
-      editedItem: {
-        name_sensor: {
-          required
-        },
-        min_nutrisi: {
-          required,
-          minLength: minLength(3),
-          maxValue: maxValue(9999)
-        }
-      }
     }
   }),
+  validations: {
+    editedItem: {
+      name_sensor: {
+        required
+      },
+      min_nutrisi: {
+        required,
+        minLength: minLength(3),
+        maxValue: maxValue(9999)
+      }
+    }
+  },
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+    },
+    nameErrors () {
+      const errors = []
+      if (!this.$v.editedItem.name_sensor.$dirty) return errors
+      !this.$v.editedItem.name_sensor.required && errors.push('nama sensor dibutuhkan!')
+      return errors
+    },
+    minnutrErrors () {
+      const errors = []
+      if (!this.$v.editedItem.min_nutrisi.$dirty) return errors
+      !this.$v.editedItem.min_nutrisi.required && errors.push('minimal nutrisi dibutuhkan!')
+      !this.$v.editedItem.min_nutrisi.minLength &&
+        errors.push('Nutrisi minimal harus 3 digit!')
+      !this.$v.editedItem.min_nutrisi.maxValue &&
+        errors.push('Nilai minimal nutrisi tidak bisa lebih dari 9999!')
+      return errors
     }
   },
 
@@ -307,40 +329,48 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
+        this.$v.$reset()
       })
     },
 
     save () {
-      console.log('simpan', this.editedItem)
-      this.loadstate(true)
-      if (this.editedIndex > -1) {
-        // save edit
-        // add axios.put
-        this.axios.put(`sensor/${this.editedItem.id}`, this.editedItem)
-          .then(response => {
-            Object.assign(this.sensors[this.editedIndex], response.data.data)
-            this.loadstate(false)
-            this.close('editNew')
-          })
-          .catch(error => {
-            console.log('error put data', error)
-            this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
-            this.loadstate(false)
-          })
+      if (this.$v.editedItem.$invalid) {
+        this.$store.dispatch('layout/alertFire', {
+          type: 'error',
+          message: 'Semua kolom harus diisi!'
+        })
       } else {
-        // save baru
-        // add axios.post
-        this.axios.post('sensor', this.editedItem)
-          .then(response => {
-            this.sensors.push(response.data.data)
-            this.loadstate(false)
-            this.close('editNew')
-          })
-          .catch(error => {
-            console.log('error store data', error)
-            this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
-            this.loadstate(false)
-          })
+        console.log('simpan', this.editedItem)
+        this.loadstate(true)
+        if (this.editedIndex > -1) {
+          // save edit
+          // add axios.put
+          this.axios.put(`sensor/${this.editedItem.id}`, this.editedItem)
+            .then(response => {
+              Object.assign(this.sensors[this.editedIndex], response.data.data)
+              this.loadstate(false)
+              this.close('editNew')
+            })
+            .catch(error => {
+              console.log('error put data', error)
+              this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
+              this.loadstate(false)
+            })
+        } else {
+          // save baru
+          // add axios.post
+          this.axios.post('sensor', this.editedItem)
+            .then(response => {
+              this.sensors.push(response.data.data)
+              this.loadstate(false)
+              this.close('editNew')
+            })
+            .catch(error => {
+              console.log('error store data', error)
+              this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
+              this.loadstate(false)
+            })
+        }
       }
     },
 

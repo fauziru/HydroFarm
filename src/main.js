@@ -17,7 +17,7 @@ window.Pusher = require('pusher-js')
 // set echo and pusher
 console.log('main', store.state.auth.access_token)
 window.Echo = new Echo({
-  authEndpoint: process.env.VUE_APP_API_ROOT + 'broadcasting/auth',
+  authEndpoint: process.env.VUE_APP_API_BASE + 'broadcasting/auth',
   broadcaster: 'pusher',
   key: process.env.VUE_APP_PUSHER_APP_KEY,
   cluster: process.env.VUE_APP_PUSHER_APP_CLUSTER,
@@ -27,7 +27,7 @@ window.Echo = new Echo({
   authorizer: (channel, options) => {
     return {
       authorize: (socketId, callback) => {
-        axios.post(process.env.VUE_APP_API_ROOT + 'api/v1/broadcasting/auth', {
+        axios.post(process.env.VUE_APP_API_BASE + 'broadcasting/auth', {
           socket_id: socketId,
           channel_name: channel.name
         })

@@ -20,9 +20,21 @@
               <div>
                 <!-- mock -->
                 Sensor {{ sensorData.name_sensor }} &mdash;
-                <span class="caption">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span
+                      class="caption"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      {{ sensorData.last_read }}
+                    </span>
+                  </template>
+                  <span>{{ sensorData.last_read | cD }}</span>
+                </v-tooltip>
+                <!-- <span class="caption">
                   {{ sensorData.last_read }}
-                </span>
+                </span> -->
               </div>
               <v-spacer />
               <!-- menu -->
@@ -79,6 +91,7 @@
               <div style="min-height: 120px;">
                 <div id="chart">
                   <apexchart
+                    ref="chart"
                     type="area"
                     height="350"
                     :options="chartOptions"
@@ -127,6 +140,13 @@ export default {
       chart: {
         height: 350,
         type: 'area',
+        animations: {
+          enabled: true,
+          easing: 'linear',
+          dynamicAnimation: {
+            speed: 1000
+          }
+        },
         toolbar: {
           show: false
         },
@@ -143,7 +163,10 @@ export default {
       },
       xaxis: {
         type: 'datetime',
-        categories: []
+        categories: [],
+        labels: {
+          datetimeUTC: false
+        }
       },
       tooltip: {
         x: {
@@ -172,7 +195,10 @@ export default {
     this.initialize()
   },
   mounted () {
-    this.listenRealDataSensor()
+  },
+  destroyed () {
+    console.log('dashboard component destroyed')
+    window.Echo.leave(`read.sensor.${this.defaultSensorWidget}`)
   },
   methods: {
     initialize () {
@@ -189,11 +215,13 @@ export default {
           this.sensorData = data.sensor_data
           this.chartOptions.xaxis.categories = data.categories_data
           console.log('sensor data', this.sensorData)
+          this.listenRealDataSensor()
           this.loadstate(false)
         })
     },
     changeWidget (id) {
       console.log('change to id', id)
+      window.Echo.leave(`read.sensor.${this.defaultSensorWidget}`)
       this.defaultSensorWidget = id
       this.series[0].data = []
       this.sensorData = {}
@@ -205,10 +233,18 @@ export default {
     },
     listenRealDataSensor () {
       console.log('real.data', this.defaultSensorWidget)
-      window.Echo.channel(`read.sensor`).listen('RealtimeDataSensor', read => {
+      window.Echo.private(`read.sensor.${this.defaultSensorWidget}`).listen('RealtimeDataSensor', read => {
         console.log('real data', read)
+        // remove first array
+        this.series[0].data.shift()
+        this.chartOptions.xaxis.categories.shift()
+        // add newest data of read sensor
         this.series[0].data.push(read.data.read_nutrisi)
         this.chartOptions.xaxis.categories.push(read.data.created_at)
+        // this.$refs.chart.updateSeries([{ data: read.data.read_nutrisi }])
+        this.$refs.chart.updateSeries([{
+          data: this.series[0].data
+        }])
       })
     }
   }

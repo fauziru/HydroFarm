@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Vuex, { createLogger } from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
+import Cookies from 'js-cookie'
+// module
 import auth from './auth'
 import layout from './layout'
 import notification from './notification'
-import createPersistedState from 'vuex-persistedstate'
-import Cookies from 'js-cookie'
+import readsensor from './sensorRead'
 
 Vue.use(Vuex)
 
@@ -25,7 +27,8 @@ export default new Vuex.Store({
   modules: {
     layout,
     auth,
-    notification
+    notification,
+    readsensor
   },
   strict: debug,
   plugins: debug ? [createLogger(), state] : [state]

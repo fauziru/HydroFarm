@@ -117,7 +117,6 @@ export default {
     Loader
   },
   data: () => ({
-    defaultSensorWidget: 1,
     optionsSensor: [],
     sensorData: {},
     series: [{
@@ -159,10 +158,21 @@ export default {
       get () {
         return this.series[0].data.slice(0).splice(-1, 1).toString()
       }
+    },
+    defaultSensorWidget: {
+      get () {
+        return this.$store.state.readsensor.sensorWidgetId
+      },
+      set (value) {
+        this.$store.commit('readsensor/setSensorWidgetId', value)
+      }
     }
   },
   created () {
     this.initialize()
+  },
+  mounted () {
+    this.listenRealDataSensor()
   },
   methods: {
     initialize () {
@@ -192,6 +202,14 @@ export default {
     },
     loadstate (state) {
       this.$store.commit('layout/setLoadstate', state)
+    },
+    listenRealDataSensor () {
+      console.log('real.data', this.defaultSensorWidget)
+      window.Echo.channel(`read.sensor`).listen('RealtimeDataSensor', read => {
+        console.log('real data', read)
+        this.series[0].data.push(read.data.read_nutrisi)
+        this.chartOptions.xaxis.categories.push(read.data.created_at)
+      })
     }
   }
 }

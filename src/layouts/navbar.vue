@@ -123,6 +123,15 @@
         >
           <v-subheader class="pa-2 font-weight-bold">
             Notifikasi
+            <v-spacer />
+            <v-btn
+              :to="{ name: 'notification' }"
+              color="primary"
+              small
+              v-if="notifUnread.length > 10"
+            >
+              Lihat Semua
+            </v-btn>
           </v-subheader>
           <!-- component notifi list -->
           <div v-if="notifUnread.length">
@@ -239,6 +248,7 @@ export default {
   },
   mounted () {
     console.log('notif unread on navbar', this.notifUnread)
+    this.listenEventNotification()
   },
   destroyed () {
     window.removeEventListener('scroll', this.changeColor)
@@ -260,6 +270,11 @@ export default {
     },
     hasHistory () {
       return window.history.length > 2
+    },
+    listenEventNotification () {
+      window.Echo.private(`App.User.${this.$store.state.auth.id}`).notification(notification => {
+        this.getUnreadnotif()
+      })
     }
   }
 }

@@ -1,10 +1,11 @@
 <template>
   <v-bottom-navigation
     v-if="isMobile && this.$route.meta.bottomNav"
+    grow="true"
+    shift
     fixed
     color="primary"
-    grow
-    shift
+    app
   >
     <v-btn
       v-for="(item, index) in menuBar"

@@ -35,7 +35,6 @@
         />
       </v-sheet>
     </v-main>
-
     <Bottombar v-if="isLoggedin" />
   </v-app>
 </template>
@@ -112,5 +111,8 @@ export default {
 }
 .v-app-bar {
   z-index: 12 !important;
+}
+#app .v-bottom-navigation .v-btn {
+  height: inherit !important;
 }
 </style>

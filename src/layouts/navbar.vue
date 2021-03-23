@@ -4,8 +4,8 @@
     :color="bg"
     height="56px"
     elevate-on-scroll
-    app
     :dark="dark"
+    app
   >
     <v-btn
       v-if="this.$route.meta.backButton"
@@ -125,10 +125,10 @@
             Notifikasi
             <v-spacer />
             <v-btn
+              v-if="notifUnread.length > 10"
               :to="{ name: 'notification' }"
               color="primary"
               small
-              v-if="notifUnread.length > 10"
             >
               Lihat Semua
             </v-btn>

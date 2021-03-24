@@ -1,7 +1,7 @@
 <template>
   <v-bottom-navigation
     v-if="isMobile && this.$route.meta.bottomNav"
-    grow="true"
+    :grow="true"
     shift
     fixed
     color="primary"

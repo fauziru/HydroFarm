@@ -46,7 +46,12 @@ const routes = [
     path: '/sensor',
     name: 'sensor',
     component: () => import('../views/Sensor.vue'),
-    meta: { requiresAuth: true, backButton: true }
+    meta: { requiresAuth: true, backButton: true },
+    children: [{
+      path: ':id',
+      name: 'sensorDetail',
+      component: () => import('../views/SensorDetail.vue')
+    }]
   },
   {
     path: '/offline',

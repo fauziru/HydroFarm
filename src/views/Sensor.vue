@@ -4,6 +4,12 @@
       class="col-xl-4 col-12"
       :style=" isMobile ? 'padding: 0px!important;' : ''"
     >
+      <router-view></router-view>
+    </div>
+    <div
+      class="col-xl-4 col-12"
+      :style=" isMobile ? 'padding: 0px!important;' : ''"
+    >
       <div class="d-flex align-center py-3">
         <div class="display-1">
           Sensor

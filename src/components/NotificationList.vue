@@ -30,7 +30,9 @@
           </v-badge>
 
           <v-list-item-content>
-            <v-list-item-title> {{ item.type | typeNotif('title') }} </v-list-item-title>
+            <v-list-item-title>
+              {{ item.type | typeNotif('title') }}
+            </v-list-item-title>
             <v-list-item-subtitle v-html="item.data.data" />
           </v-list-item-content>
           <v-list-item-action class="align-self-center">

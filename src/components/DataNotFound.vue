@@ -8,7 +8,7 @@
     </div>
     <v-img
       :src="require('../assets/Login/Loginbg.png')"
-      class="mx-auto py-3"
+      class="mx-auto my-4"
       contain
       height="300"
       width="300"

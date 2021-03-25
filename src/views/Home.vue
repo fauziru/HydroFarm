@@ -38,7 +38,10 @@
               </div>
               <v-spacer />
               <!-- menu -->
-              <v-menu offset-y>
+              <v-menu
+                v-if="!isMobile"
+                offset-y
+              >
                 <template v-slot:activator="{ on, attrs }">
                   <!-- button -->
                   <v-btn
@@ -63,6 +66,37 @@
                   </v-list-item>
                 </v-list>
               </v-menu>
+              <v-bottom-sheet
+                v-else
+                scrollable
+                v-model="bottomSheet"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="grey darken-1"
+                    icon
+                    depressed
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-leak</v-icon>
+                  </v-btn>
+                </template>
+                <v-card class="rounded-t-xl">
+                  <v-card-text style="height: 250px;">
+                    <v-list>
+                      <v-subheader>Pilih sensor</v-subheader>
+                      <v-list-item
+                        v-for="(item, index) in optionsSensor"
+                        :key="index"
+                        @click="changeWidget(item.id)"
+                      >
+                        <v-list-item-title>{{ item.name_sensor }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-card-text>
+                </v-card>
+              </v-bottom-sheet>
             </v-card-title>
             <div v-if="series[0].data.length > 0 && !loadState">
               <div class="px-4 pb-4">
@@ -130,6 +164,7 @@ export default {
     Loader
   },
   data: () => ({
+    bottomSheet: false,
     optionsSensor: [],
     sensorData: {},
     series: [{
@@ -226,6 +261,7 @@ export default {
       this.series[0].data = []
       this.sensorData = {}
       this.chartOptions.xaxis.categories = []
+      this.bottomSheet = false
       this.initialize()
     },
     loadstate (state) {

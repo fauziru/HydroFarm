@@ -9,9 +9,7 @@
       <template v-for="(item, i) in notifications">
         <v-list-item
           :key="item.title"
-          :to="item.data.link"
-          link
-          @click="readNotif(item.id)"
+          @click="read(item.data.link, item.id, item.read_at)"
           @scroll.native="infiniteLoad"
         >
           <v-badge
@@ -138,6 +136,12 @@ export default {
     },
     loadstate (state) {
       this.$store.commit('layout/setLoadstate', state)
+    },
+    read (link, id, stat) {
+      if (!stat) {
+        this.readNotif(id)
+      }
+      this.$router.push({ path: link })
     }
   }
 }

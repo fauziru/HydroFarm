@@ -145,7 +145,7 @@ export default {
       get () {
         return this.series[0].data.slice(0).splice(-1, 1).toString()
       }
-    },
+    }
   },
 
   watch: {

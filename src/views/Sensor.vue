@@ -4,7 +4,7 @@
       class="col-xl-4 col-12"
       :style=" isMobile ? 'padding: 0px!important;' : ''"
     >
-      <router-view></router-view>
+      <router-view />
     </div>
     <div
       class="col-xl-4 col-12"

@@ -49,8 +49,9 @@ const routes = [
     meta: { requiresAuth: true, backButton: true },
     children: [{
       path: ':id',
-      name: 'sensorDetail',
-      component: () => import('../views/SensorDetail.vue')
+      name: 'sensor detail',
+      component: () => import('../views/SensorDetail.vue'),
+      meta: { requiresAuth: true, backButton: true }
     }]
   },
   {

@@ -140,7 +140,12 @@ export default {
   }),
 
   computed: {
-    ...mapState('layout', ['isMobile', 'loadState'])
+    ...mapState('layout', ['isMobile', 'loadState']),
+    lastRead: {
+      get () {
+        return this.series[0].data.slice(0).splice(-1, 1).toString()
+      }
+    },
   },
 
   watch: {

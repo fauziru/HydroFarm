@@ -68,8 +68,8 @@
               </v-menu>
               <v-bottom-sheet
                 v-else
-                scrollable
                 v-model="bottomSheet"
+                scrollable
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn

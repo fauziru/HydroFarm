@@ -176,11 +176,7 @@ export default {
         height: 350,
         type: 'area',
         animations: {
-          enabled: true,
-          easing: 'linear',
-          dynamicAnimation: {
-            speed: 1000
-          }
+          enabled: false
         },
         toolbar: {
           show: false
@@ -271,12 +267,9 @@ export default {
       console.log('real.data', this.defaultSensorWidget)
       window.Echo.private(`read.sensor.${this.defaultSensorWidget}`).listen('RealtimeDataSensor', read => {
         console.log('real data', read)
-        // remove first array
-        this.series[0].data.shift()
-        this.chartOptions.xaxis.categories.shift()
         // add newest data of read sensor
-        this.series[0].data.push(read.data.read_nutrisi)
-        this.chartOptions.xaxis.categories.push(read.data.created_at)
+        this.series[0].data.unshift(read.data.read_nutrisi)
+        this.chartOptions.xaxis.categories.unshift(read.data.created_at)
         // this.$refs.chart.updateSeries([{ data: read.data.read_nutrisi }])
         this.$refs.chart.updateSeries([{
           data: this.series[0].data

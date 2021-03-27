@@ -210,7 +210,7 @@ export default {
     ...mapState('layout', ['isMobile', 'loadState']),
     lastRead: {
       get () {
-        return this.series[0].data.slice(0).splice(-1, 1).toString()
+        return this.series[0].data.slice(0).splice(0, 1).toString()
       }
     },
     defaultSensorWidget: {

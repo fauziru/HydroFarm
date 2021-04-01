@@ -42,12 +42,6 @@ const mutations = {
 
   // clear our the state, essentially logging out the user
   [AUTH_MUTATIONS.LOGOUT] (state, force = null) {
-    if (force) {
-      window.axios.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${state.access_token}`
-      window.axios.get('/logout')
-    }
     state.id = null
     state.email_address = null
     state.access_token = null

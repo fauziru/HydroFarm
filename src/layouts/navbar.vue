@@ -20,14 +20,19 @@
       v-else
       @click.stop="draw()"
     />
-    <v-img
-      alt="Vuetify Logo"
-      class="shrink mr-2"
-      contain
-      :src="require('../assets/logo.png')"
-      transition="scale-transition"
-      width="40"
-    />
+    <v-btn
+      @click.stop="draw()"
+      icon
+    >
+      <v-img
+        alt="Vuetify Logo"
+        class="shrink mr-2"
+        contain
+        :src="require('../assets/logo.png')"
+        transition="scale-transition"
+        width="40"
+      />
+    </v-btn>
     <v-spacer />
     <v-toolbar-title
       class="text-capitalize mr-6"
@@ -129,6 +134,7 @@
               :to="{ name: 'notification' }"
               color="primary"
               small
+              @click="readAll()"
             >
               Lihat Semua
             </v-btn>
@@ -255,7 +261,7 @@ export default {
   },
   methods: {
     ...mapActions('layout', ['draw', 'menuBar']),
-    ...mapActions('notification', ['readNotif', 'getUnreadnotif']),
+    ...mapActions('notification', ['readNotif', 'getUnreadnotif', 'readAll']),
     changeColor () {
       if (
         document.body.scrollTop > 70 ||

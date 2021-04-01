@@ -27,6 +27,10 @@ const actions = {
     const { data: { data } } = await axios.get('/notification/unread')
     commit(NOTIF_MUTATIONS.SET_UNREAD, data)
     console.log('notif unread', state.notifUnread)
+  },
+  readAll ({ commit }) {
+    axios.get('notification/readall')
+    commit(NOTIF_MUTATIONS.SET_UNREAD, null)
   }
 }
 

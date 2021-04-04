@@ -21,8 +21,8 @@
       @click.stop="draw()"
     />
     <v-btn
-      @click.stop="draw()"
       icon
+      @click.stop="draw()"
     >
       <v-img
         alt="Vuetify Logo"
@@ -244,8 +244,7 @@ export default {
       get () {
         return this.$store.state.layout.menuBar
       },
-      set (value) {
-      }
+      set (value) { }
     }
   },
   created () {
@@ -263,18 +262,15 @@ export default {
     ...mapActions('layout', ['draw', 'menuBar']),
     ...mapActions('notification', ['readNotif', 'getUnreadnotif', 'readAll']),
     changeColor () {
-      var themeColor = document.querySelector("meta[name=theme-color]")
-      if (
-        document.body.scrollTop > 70 ||
-        document.documentElement.scrollTop > 70
-      ) {
+      var themeColor = document.querySelector('meta[name=theme-color]')
+      if (document.body.scrollTop > 70 || document.documentElement.scrollTop > 70) {
         this.bg = 'white'
         this.dark = false
-        themeColor.setAttribute("content", "#f5f5f5")
+        themeColor.setAttribute('content', '#f5f5f5')
       } else {
         this.bg = 'secondary'
         this.dark = true
-        themeColor.setAttribute("content", "#29b6f6")
+        themeColor.setAttribute('content', '#29b6f6')
       }
     },
     hasHistory () {

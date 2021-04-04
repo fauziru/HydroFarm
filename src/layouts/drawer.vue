@@ -58,7 +58,9 @@
               Logout
               <v-icon> mdi-logout </v-icon>
             </div>
-            <v-icon v-else> mdi-logout </v-icon>
+            <v-icon v-else>
+              mdi-logout
+            </v-icon>
           </div>
           <Loader v-else />
         </v-btn>

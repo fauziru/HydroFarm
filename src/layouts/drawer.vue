@@ -82,7 +82,7 @@ export default {
       { title: 'Rakit Apung', icon: 'mdi-bed-outline', link: '#' },
       { title: 'Tray', icon: 'mdi-tray', link: '#' },
       { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
-      { title: 'Users', icon: 'mdi-account-group-outline', link: '#' },
+      { title: 'Users', icon: 'mdi-account-group-outline', link: { name: 'user' } },
       { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', link: { name: 'dashboard' } },
       { title: 'My Account', icon: 'mdi-account-outline', link: { name: 'account' } },
       { title: 'Settings', icon: 'mdi-cog-outline', link: '#' }

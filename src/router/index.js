@@ -55,6 +55,18 @@ const routes = [
     }]
   },
   {
+    path: '/user',
+    name: 'user',
+    component: () => import('../views/User.vue'),
+    meta: { requiresAuth: true, backButton: true },
+    children: [{
+      path: ':id',
+      name: 'user detail',
+      component: () => import('../views/UserDetail.vue'),
+      meta: { requiresAuth: true, backButton: true }
+    }]
+  },
+  {
     path: '/offline',
     name: 'offline',
     component: () => import('../views/Offline.vue'),

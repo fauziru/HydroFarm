@@ -263,15 +263,18 @@ export default {
     ...mapActions('layout', ['draw', 'menuBar']),
     ...mapActions('notification', ['readNotif', 'getUnreadnotif', 'readAll']),
     changeColor () {
+      var themeColor = document.querySelector("meta[name=theme-color]")
       if (
         document.body.scrollTop > 70 ||
         document.documentElement.scrollTop > 70
       ) {
         this.bg = 'white'
         this.dark = false
+        themeColor.setAttribute("content", "#f5f5f5")
       } else {
         this.bg = 'secondary'
         this.dark = true
+        themeColor.setAttribute("content", "#29b6f6")
       }
     },
     hasHistory () {

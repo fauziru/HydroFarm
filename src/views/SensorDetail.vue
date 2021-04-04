@@ -164,7 +164,7 @@ export default {
       this.axios.get(`sensor-nutrisi/detail/${this.$route.params.id}`)
         .then(response => {
           const data = response.data.data
-          console.log('widget data', data)
+          console.log('detail read data', data)
           this.series[0].data = data.series_data
           this.sensorData = data.sensor_data
           this.chartOptions.xaxis.categories = data.categories_data

@@ -266,7 +266,7 @@ export default {
       if (document.body.scrollTop > 70 || document.documentElement.scrollTop > 70) {
         this.bg = 'white'
         this.dark = false
-        themeColor.setAttribute('content', '#f5f5f5')
+        themeColor.setAttribute('content', '#ffffff')
       } else {
         this.bg = 'secondary'
         this.dark = true

@@ -64,7 +64,9 @@
       </v-card-text>
     </v-card>
     <div class="text-center mt-6">
-      <a href="#">Daftar</a>
+      <router-link :to="{ name: 'register' }">
+        Daftar
+      </router-link>
     </div>
     <div class="overline mt-4 text-center">
       <a href="https://github.com/fauziru"> @fauziru </a>

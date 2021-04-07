@@ -69,6 +69,7 @@
               <v-bottom-sheet
                 v-else
                 v-model="bottomSheet"
+                overlay-color="lime lighten-5"
                 scrollable
               >
                 <template v-slot:activator="{ on, attrs }">

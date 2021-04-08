@@ -49,8 +49,6 @@
             :disabled="loadState"
             @click="loginAttemp"
             @keypress.enter="loginAttemp"
-            @keydown.enter="loginAttemp"
-            @keyup.enter="loginAttemp"
           >
             <div v-if="!loadState">
               Masuk

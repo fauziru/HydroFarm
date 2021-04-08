@@ -8,6 +8,7 @@
     >
       <v-stepper-step
         :complete="e6 > 1"
+        :rules="[() => form1.validKey]"
         step="1"
       >
         <span>
@@ -29,9 +30,13 @@
         />
         <v-btn
           color="primary"
+          :disabled="loadState"
           @click="validationKey()"
         >
-          Cek
+          <div v-if="!loadState">
+            Cek
+          </div>
+          <Loader v-else />
         </v-btn>
       </v-stepper-content>
 
@@ -43,20 +48,31 @@
       </v-stepper-step>
 
       <v-stepper-content step="2">
-        <v-form class="pt-3">
+        <v-form
+          :disabled="loadState"
+          class="pt-3"
+        >
           <v-text-field
+            v-model="form2.email"
+            :error-messages="emailErrors"
             label="Email"
             outlined
             required
             clearable
+            @input="$v.form2.email.$touch"
           />
           <v-text-field
+            v-model="form2.name"
+            :error-messages="nameErrors"
             label="Nama"
             outlined
             required
             clearable
+            @input="$v.form2.name.$touch"
           />
           <v-text-field
+            v-model="form2.password"
+            :error-messages="passwordErrors"
             label="Password"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPass ? 'text' : 'password'"
@@ -64,8 +80,11 @@
             required
             clearable
             @click:append="showPass = !showPass"
+            @input="$v.form2.password.$touch"
           />
           <v-text-field
+            v-model="form2.coPassword"
+            :error-messages="coPasswordErrors"
             label="Confirm Password"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPass ? 'text' : 'password'"
@@ -73,11 +92,13 @@
             required
             clearable
             @click:append="showPass = !showPass"
+            @input="$v.form2.coPassword.$touch"
           />
         </v-form>
         <v-btn
           color="primary"
-          @click="e6 = 3"
+          :disabled="loadState"
+          @click="registrationAttemp()"
         >
           Daftar
         </v-btn>
@@ -119,11 +140,11 @@ export default {
     showPass: false,
     form1: {
       keyRegister: '',
-      validKey: false
+      validKey: true
     },
     form2: {
       email: '',
-      nama: '',
+      name: '',
       password: '',
       coPassword: ''
     }
@@ -139,7 +160,7 @@ export default {
         required,
         email
       },
-      nama: {
+      name: {
         required
       },
       password: {
@@ -147,27 +168,85 @@ export default {
         minLength: minLength(8)
       },
       coPassword: {
+        required,
         sameAsPassword: sameAs('password')
       }
     }
   },
   computed: {
-    ...mapState('layout', ['isMobile']),
+    ...mapState('layout', ['isMobile', 'loadState']),
     keyErrors () {
       const errors = []
       if (!this.$v.form1.keyRegister.$dirty) return errors
       !this.$v.form1.keyRegister.required && errors.push('key dibutuhkan!')
+      return errors
+    },
+    nameErrors () {
+      const errors = []
+      if (!this.$v.form2.name.$dirty) return errors
+      !this.$v.form2.name.required && errors.push('nama dibutuhkan!')
+      return errors
+    },
+    emailErrors () {
+      const errors = []
+      if (!this.$v.form2.email.$dirty) return errors
+      !this.$v.form2.email.required && errors.push('email dibutuhkan!')
+      !this.$v.form2.email.email && errors.push('email tidak valid!')
+      return errors
+    },
+    passwordErrors () {
+      const errors = []
+      if (!this.$v.form2.password.$dirty) return errors
+      !this.$v.form2.password.required && errors.push('password dibutuhkan!')
+      !this.$v.form2.password.minLength && errors.push('password minimal harus 8 karakter!')
+      return errors
+    },
+    coPasswordErrors () {
+      const errors = []
+      if (!this.$v.form2.coPassword.$dirty) return errors
+      !this.$v.form2.coPassword.required && errors.push('confirm password dibutuhkan!')
+      !this.$v.form2.coPassword.sameAsPassword && errors.push('confirm tidak sama!')
       return errors
     }
   },
   methods: {
     validationKey () {
       if (this.$v.form1.$invalid) {
-        this.$store.dispatch('layout/alertFire', {
-          type: 'error',
-          message: 'Harap masukan key!'
-        })
+        this.alert('Harap masukan key', 'error')
+      } else {
+        this.loadstate(true)
+        this.axios.post('registrasiKey', this.form1)
+          .then(response => {
+            console.log('response key validation', response.data)
+            !response.data.data.validKey
+              ? this.alert('Key registrasi tidak valid!', 'error')
+              : this.e6 = 2
+            this.form1.validKey = response.data.data.validKey
+            this.loadstate(false)
+          })
       }
+    },
+    registrationAttemp () {
+      if (this.$v.form2.$invalid) {
+        this.alert('Harap isi form dengan benar!', 'error')
+      } else {
+        this.loadstate(true)
+        this.e6 = 3
+        this.$store.dispatch('auth/register', this.form2)
+          .then(() => {
+            this.loadstate(false)
+          })
+          .catch(() => { this.e6 = 2 })
+      }
+    },
+    alert (message, type) {
+      this.$store.dispatch('layout/alertFire', {
+        type: type,
+        message: message
+      })
+    },
+    loadstate (state) {
+      this.$store.commit('layout/setLoadstate', state)
     }
   }
 }

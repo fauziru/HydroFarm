@@ -76,6 +76,26 @@ const actions = {
     }
   },
 
+  async register ({ commit, dispatch }, dataauth) {
+    try {
+      const { data: { user, payload } } = await axios.post('/register', dataauth)
+      commit(AUTH_MUTATIONS.SET_USER, user)
+      commit(AUTH_MUTATIONS.SET_PAYLOAD, payload)
+      router.push({ name: 'dashboard' })
+      dispatch(
+        'layout/alertFire',
+        { type: 'success', message: 'Registrasi sukses!' },
+        { root: true }
+      )
+    } catch (response) {
+      dispatch(
+        'layout/alertFire',
+        { type: 'error', message: response.response.data.message },
+        { root: true }
+      )
+    }
+  },
+
   async refresh ({ commit, state }) {
     const { refresh_token } = state.refresh_token
     console.log('refresh token store auth', state.refresh_token)

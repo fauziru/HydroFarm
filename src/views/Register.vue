@@ -27,11 +27,12 @@
           required
           clearable
           @input="$v.form1.keyRegister.$touch"
+          @keyup.enter.native="validationKey"
         />
         <v-btn
           color="primary"
           :disabled="loadState"
-          @click="validationKey()"
+          @click="validationKey"
         >
           <div v-if="!loadState">
             Cek
@@ -93,12 +94,13 @@
             clearable
             @click:append="showPass = !showPass"
             @input="$v.form2.coPassword.$touch"
+            @keyup.enter.native="registrationAttemp"
           />
         </v-form>
         <v-btn
           color="primary"
           :disabled="loadState"
-          @click="registrationAttemp()"
+          @click="registrationAttemp"
         >
           Daftar
         </v-btn>

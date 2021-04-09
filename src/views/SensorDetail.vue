@@ -4,85 +4,90 @@
       {{  this.$route.params.id }}
     </v-card-title>
   </v-card> -->
-  <v-card
-    class="d-flex flex-grow-1 h-full elevation-1"
-    color="white"
-    rounded="xl"
-    min-height="380"
+  <div
+    class="col-xl-4 col-12"
+    :style=" isMobile ? 'padding: 0px!important;' : ''"
   >
-    <div
-      class="d-flex flex-column flex-grow-1"
-      style="position: relative;"
+    <v-card
+      class="d-flex flex-grow-1 h-full elevation-1"
+      color="white"
+      rounded="xl"
+      min-height="380"
     >
-      <v-card-title v-if="!loadState">
-        <div>
-          <!-- mock -->
-          Sensor {{ sensorData.name_sensor }} &mdash;
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <span
-                class="caption"
-                v-bind="attrs"
-                v-on="on"
-              >
-                {{ sensorData.last_read }}
-              </span>
-            </template>
-            <span>{{ sensorData.last_read | cD }}</span>
-          </v-tooltip>
-          <!-- <span class="caption">
-                  {{ sensorData.last_read }}
-                </span> -->
-        </div>
-        <v-spacer />
-        <!-- menu -->
-      </v-card-title>
-      <div v-if="series[0].data.length > 0 && !loadState">
-        <div class="px-4 pb-4">
-          <div class="d-flex align-center">
-            <div class="text-h4 primary--text">
-              <!-- mock -->
-              {{ lastRead }} ppm
-            </div>
-            <v-spacer />
-            <div class="d-flex flex-column text-right">
-              <div class="font-weight-bold">
-                <span>
-                  <span class="warning--text">
-                    <v-icon color="warning">mdi-dots-hexagon</v-icon>
-                    <!-- mock -->
-                    {{ sensorData.min_nutrisi }}ppm
-                  </span>
-                </span>
-              </div>
-              <div class="caption">
-                Minimal Nutrisi
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="min-height: 120px;">
-          <div id="chart">
-            <apexchart
-              ref="chart"
-              type="area"
-              height="350"
-              :options="chartOptions"
-              :series="series"
-            />
-          </div>
-        </div>
-      </div>
-      <!-- if nothing -->
       <div
-        v-else-if="loadState"
-        class="text-center my-auto"
+        class="d-flex flex-column flex-grow-1"
+        style="position: relative;"
       >
-        <Loader />
+        <v-card-title v-if="!loadState">
+          <div>
+            <!-- mock -->
+            Sensor {{ sensorData.name_sensor }} &mdash;
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <span
+                  class="caption"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  {{ sensorData.last_read }}
+                </span>
+              </template>
+              <span>{{ sensorData.last_read | cD }}</span>
+            </v-tooltip>
+            <!-- <span class="caption">
+                    {{ sensorData.last_read }}
+                  </span> -->
+          </div>
+          <v-spacer />
+          <!-- menu -->
+        </v-card-title>
+        <div v-if="series[0].data.length > 0 && !loadState">
+          <div class="px-4 pb-4">
+            <div class="d-flex align-center">
+              <div class="text-h4 primary--text">
+                <!-- mock -->
+                {{ lastRead }} ppm
+              </div>
+              <v-spacer />
+              <div class="d-flex flex-column text-right">
+                <div class="font-weight-bold">
+                  <span>
+                    <span class="warning--text">
+                      <v-icon color="warning">mdi-dots-hexagon</v-icon>
+                      <!-- mock -->
+                      {{ sensorData.min_nutrisi }}ppm
+                    </span>
+                  </span>
+                </div>
+                <div class="caption">
+                  Minimal Nutrisi
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="min-height: 120px;">
+            <div id="chart">
+              <apexchart
+                ref="chart"
+                type="area"
+                height="350"
+                :options="chartOptions"
+                :series="series"
+              />
+            </div>
+          </div>
+        </div>
+        <!-- if nothing -->
+        <div
+          v-else-if="loadState"
+          class="text-center my-auto"
+        >
+          <Loader />
+        </div>
+        <if-nothing v-else />
       </div>
-      <if-nothing v-else />
-    </div>
-  </v-card>
+    </v-card>
+  </div>
 </template>
 
 <script>

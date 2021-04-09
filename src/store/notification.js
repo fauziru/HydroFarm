@@ -30,7 +30,7 @@ const actions = {
   },
   readAll ({ commit }) {
     axios.get('notification/readall')
-    commit(NOTIF_MUTATIONS.SET_UNREAD, null)
+    commit(NOTIF_MUTATIONS.SET_UNREAD, [])
   }
 }
 

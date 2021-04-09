@@ -1,11 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <div
-      class="col-xl-4 col-12"
-      :style=" isMobile ? 'padding: 0px!important;' : ''"
-    >
-      <router-view />
-    </div>
+    <router-view />
     <div
       class="col-xl-4 col-12"
       :style=" isMobile ? 'padding: 0px!important;' : ''"

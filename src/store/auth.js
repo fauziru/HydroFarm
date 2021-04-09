@@ -90,7 +90,7 @@ const actions = {
     } catch (response) {
       dispatch(
         'layout/alertFire',
-        { type: 'error', message: response.response.data.message },
+        { type: 'error', message: response.response.data.message.email[0] },
         { root: true }
       )
     }

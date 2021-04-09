@@ -49,6 +49,18 @@ const routes = [
     meta: { requiresAuth: true, backButton: true }
   },
   {
+    path: '/setting',
+    name: 'setting',
+    component: () => import('../views/Settings/index.vue'),
+    meta: { requiresAuth: true, backButton: true }
+  },
+  {
+    path: '/setting/registrasikey',
+    name: 'registrasi key',
+    component: () => import('../views/Settings/RegistrasiKey.vue'),
+    meta: { requiresAuth: true, backButton: true }
+  },
+  {
     path: '/sensor',
     name: 'sensor',
     component: () => import('../views/Sensor.vue'),

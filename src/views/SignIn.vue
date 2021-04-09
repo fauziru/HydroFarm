@@ -38,6 +38,7 @@
             :error-messages="passErrors"
             @input="$v.form.password.$touch"
             @click:append="showPass = !showPass"
+            @keyup.enter.native="loginAttemp"
           />
           <!-- <v-checkbox v-model="form.rememberMe" label="Ingat saya"></v-checkbox> -->
           <v-btn

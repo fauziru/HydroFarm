@@ -84,7 +84,7 @@
                   </v-btn>
                 </template>
                 <v-card class="rounded-t-xl">
-                  <v-card-text style="height: 250px;">
+                  <v-card-text style="height: 250px; padding: 0px!important;">
                     <v-list>
                       <v-subheader>Pilih sensor</v-subheader>
                       <v-list-item

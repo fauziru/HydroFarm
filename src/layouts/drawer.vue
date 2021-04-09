@@ -87,7 +87,7 @@ export default {
       { title: 'Users', icon: 'mdi-account-group-outline', link: { name: 'user' } },
       { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', link: { name: 'dashboard' } },
       { title: 'My Account', icon: 'mdi-account-outline', link: { name: 'account' } },
-      { title: 'Settings', icon: 'mdi-cog-outline', link: '#' }
+      { title: 'Settings', icon: 'mdi-cog-outline', link: { name: 'setting' } }
     ]
   }),
 

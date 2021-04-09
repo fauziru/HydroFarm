@@ -4,8 +4,57 @@
       <v-subheader
         v-if="!loadState"
         class="text-capitalize"
-        v-text="section"
-      />
+      >
+        {{ section }}
+        <v-spacer />
+        <v-menu
+          v-if="!isMobile"
+          offset-y
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <!-- button -->
+            <v-btn
+              class="primary--text"
+              text
+              depressed
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="readAll">
+              <v-list-item-title>Tandai baca semua</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-bottom-sheet
+          v-else
+          v-model="bottomSheet"
+          class="rounded-t-xl"
+          overlay-color="lime lighten-5"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="grey darken-1"
+              icon
+              depressed
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon dense>mdi-dots-horizontal</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="readall">
+              <v-list-item-title>Tandai baca semua</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-bottom-sheet>
+      </v-subheader>
       <template v-for="(item, i) in notifications">
         <v-list-item
           :key="item.title"
@@ -83,12 +132,13 @@ export default {
     }
   },
   data: () => ({
+    bottomSheet: false,
     notifications: [],
     page: 1,
     maxPage: false
   }),
   computed: {
-    ...mapState('layout', ['loadState'])
+    ...mapState('layout', ['loadState', 'isMobile'])
   },
   created () {
     this.getNotification()
@@ -106,7 +156,7 @@ export default {
     window.removeEventListener('scroll', this.infiniteLoad)
   },
   methods: {
-    ...mapActions('notification', ['readNotif']),
+    ...mapActions('notification', ['readNotif', 'readAll']),
     async getNotification () {
       this.loadstate(true)
       const {
@@ -138,11 +188,24 @@ export default {
       this.$store.commit('layout/setLoadstate', state)
     },
     read (link, id, stat) {
-      if (!stat) {
-        this.readNotif(id)
-      }
+      if (!stat) this.readNotif(id)
       this.$router.push({ path: link })
+    },
+    readall () {
+      this.bottomSheet = false
+      this.readAll()
     }
   }
 }
 </script>
+
+<style>
+.v-bottom-sheet.v-dialog {
+  border-radius: 25px !important;
+}
+
+.v-sheet.v-list {
+  border-top-left-radius: 25px !important;
+  border-top-right-radius: 25px !important;
+}
+</style>

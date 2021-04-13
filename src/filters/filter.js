@@ -62,3 +62,7 @@ Vue.filter('typeNotif', function (section, attribute) {
 Vue.filter('truncate', function (text, length, suffix) {
   return text.length > length ? text.substring(0, length) + suffix : text
 })
+
+Vue.filter('toString', function (data) {
+  return data.toString()
+})

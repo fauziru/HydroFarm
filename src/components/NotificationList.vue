@@ -45,7 +45,9 @@
               v-bind="attrs"
               v-on="on"
             >
-              <v-icon dense>mdi-dots-horizontal</v-icon>
+              <v-icon dense>
+                mdi-dots-horizontal
+              </v-icon>
             </v-btn>
           </template>
           <v-list>

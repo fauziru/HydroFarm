@@ -141,6 +141,10 @@
           </v-toolbar>
         </template>
 
+        <template v-slot:[`item.id`]="{ item }">
+          <m-copied-label :text="item.id | toString" />
+        </template>
+
         <template v-slot:[`item.status`]="{ item }">
           <v-chip
             :color="item.status ? 'green' : 'red'"
@@ -203,11 +207,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { required, minLength, maxValue } from 'vuelidate/lib/validators'
+import CopiedLabel from '@/components/CopiedLabel.vue'
 import Loader from '@/components/ProgressCircle.vue'
 
 export default {
   components: {
-    Loader
+    Loader,
+    'm-copied-label': CopiedLabel
   },
   data: () => ({
     search: '',

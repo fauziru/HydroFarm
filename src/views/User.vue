@@ -1,11 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-grow-1">
-    <div
-      class="col-xl-4 col-12"
-      :style=" isMobile ? 'padding: 0px!important;' : ''"
-    >
-      <router-view />
-    </div>
+    <router-view />
     <div
       class="col-xl-4 col-12"
       :style=" isMobile ? 'padding: 0px!important;' : ''"
@@ -67,6 +62,10 @@
           </v-tooltip>
         </template>
 
+        <template v-slot:[`item.email_address`]="{ item }">
+          <m-copied-label :text="item.email_address" />
+        </template>
+
         <template v-slot:[`item.status`]="{ item }">
           <v-chip
             :color="item.status ? 'green' : 'red'"
@@ -93,11 +92,13 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import CopiedLabel from '@/components/CopiedLabel.vue'
 import Loader from '@/components/ProgressCircle.vue'
 
 export default {
   components: {
-    Loader
+    Loader,
+    'm-copied-label': CopiedLabel
   },
   data: () => ({
     search: '',

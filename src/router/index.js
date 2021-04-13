@@ -61,6 +61,12 @@ const routes = [
     meta: { requiresAuth: true, backButton: true }
   },
   {
+    path: '/setting/secretkey',
+    name: 'secret key',
+    component: () => import('../views/Settings/APIKey.vue'),
+    meta: { requiresAuth: true, backButton: true }
+  },
+  {
     path: '/sensor',
     name: 'sensor',
     component: () => import('../views/Sensor.vue'),

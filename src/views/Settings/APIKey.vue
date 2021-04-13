@@ -15,9 +15,11 @@
       <v-card-text>
         <v-form>
           <v-text-field
-            v-model="registrasiKey"
+            id="apiKey"
+            v-model="apiKey"
+            :loading="loadState"
             outlined
-            label="Registrasi Key"
+            label="Api Key"
           />
         </v-form>
       </v-card-text>
@@ -26,6 +28,7 @@
         <v-btn
           color="secondary"
           text
+          @click.stop.prevent="copy"
         >
           copy
           <v-icon right>
@@ -35,6 +38,7 @@
         <v-btn
           color="primary"
           text
+          @click.stop.prevent="generate"
         >
           Generate
           <v-icon right>
@@ -51,14 +55,47 @@ import { mapState } from 'vuex'
 
 export default {
   data: () => ({
-    registrasiKey: 'mock'
+    apiKey: ''
   }),
   computed: {
-    ...mapState('layout', ['isMobile'])
+    ...mapState('layout', ['isMobile', 'loadState'])
+  },
+  created () {
+    this.initialize()
   },
   methods: {
-    tes () {
-      console.log('tes')
+    initialize () {
+      this.loadstate(true)
+      this.axios.get('setting/api_key')
+        .then(response => {
+          // console.log('key repsonse', response.data.data)
+          this.apiKey = response.data.data
+          this.loadstate(false)
+        })
+    },
+    generate () {
+      this.loadstate(true)
+      this.axios.get('setting/generate/api_key')
+        .then(response => {
+          // console.log('key repsonse', response.data.data)
+          this.apiKey = response.data.data
+          this.loadstate(false)
+        })
+    },
+    copy () {
+      var range = document.createRange()
+      range.selectNode(document.getElementById('apiKey'))
+      window.getSelection().removeAllRanges() // clear current selection
+      window.getSelection().addRange(range) // to select text
+      document.execCommand('copy')
+      window.getSelection().removeAllRanges() // to deselect
+      this.$store.dispatch('layout/alertFire', {
+        type: 'success',
+        message: 'Teks berhasil disalin!'
+      })
+    },
+    loadstate (state) {
+      this.$store.commit('layout/setLoadstate', state)
     }
   }
 }

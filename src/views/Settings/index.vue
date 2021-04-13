@@ -51,7 +51,7 @@ export default {
   data: () => ({
     setting: [
       { title: 'Registrasi Key', subtitle: 'Key registrasi untuk pendaftaran user baru', icon: 'mdi-key', link: { name: 'registrasi key' } },
-      { title: 'API Key', subtitle: 'Key API untuk membatasi hak akses penggunaan API', icon: 'mdi-key', link: { name: 'secret key' } }
+      { title: 'API Key', subtitle: 'Key API untuk membatasi hak akses penggunaan API', icon: 'mdi-key', link: { name: 'api key' } }
     ]
   }),
   computed: {

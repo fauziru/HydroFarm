@@ -2,9 +2,9 @@
   <v-tooltip bottom>
     <template v-slot:activator="{ on, attrs }">
       <span
+        :id="text"
         v-bind="attrs"
         v-on="on"
-        :id="text"
         @click.stop.prevent="copyToClipboard"
       >
         {{ text }}

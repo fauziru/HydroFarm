@@ -13,7 +13,7 @@ axios.interceptors.request.use(
     // Do something before request is sent
     // Check your token for validity, and if needed, refresh the token / force re-login etc.
     const token = store.state.auth.access_token
-    console.log('on request axios', token)
+    // console.log('on request axios', token)
     if (token) config.headers.Authorization = `Bearer ${token}`
     store.commit('layout/setOffline', false)
     return config
@@ -31,7 +31,7 @@ axios.interceptors.response.use(undefined, function (error) {
     router.push({ name: 'offline' })
     store.commit('layout/setOffline', true)
   }
-  console.log('on response error axios', error.response.status, error.config, error.config.__isRetryRequest)
+  // console.log('on response error axios', error.response.status, error.config, error.config.__isRetryRequest)
   const IGNORED_PATHS = ['/login', '/logout', '/refresh']
   return new Promise(() => {
     const isIgnored = IGNORED_PATHS.some(path =>
@@ -43,7 +43,7 @@ axios.interceptors.response.use(undefined, function (error) {
       !error.config.__isRetryRequest &&
       !isIgnored
     ) {
-      console.log('force logout')
+      // console.log('force logout')
       store.commit('auth/LOGOUT', true)
       router.push({ name: 'login' })
     }

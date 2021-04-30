@@ -39,6 +39,125 @@
                   </span> -->
           </div>
           <v-spacer />
+          <!-- filter dialog -->
+          <v-dialog
+            v-model="dialog"
+            :fullscreen="isMobile ? true : false "
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                dark
+                icon
+                depressed
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-filter-outline</v-icon>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-toolbar
+                dark
+                color="primary"
+              >
+                <v-btn
+                  icon
+                  dark
+                  @click="dialog = false"
+                >
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+                <v-toolbar-title>Filters</v-toolbar-title>
+                <v-spacer />
+                <v-toolbar-items>
+                  <v-btn
+                    v-if="radioGroup > 0"
+                    dark
+                    text
+                    @click="resetFilter"
+                  >
+                    Reset
+                  </v-btn>
+                  <v-btn
+                    dark
+                    text
+                    @click="filtered"
+                  >
+                    Terapkan
+                  </v-btn>
+                </v-toolbar-items>
+              </v-toolbar>
+              <v-list
+                three-line
+                subheader
+              >
+                <v-subheader>Waktu</v-subheader>
+                <v-radio-group v-model="radioGroup">
+                  <v-list-item
+                    v-for="(item, index) in filterWaktu"
+                    :key="index"
+                  >
+                    <v-list-item-action>
+                      <v-radio :value="index" />
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-radio-group>
+                <v-list-item>
+                  <v-dialog
+                    ref="dialog"
+                    v-model="datepickerModal"
+                    :return-value.sync="filterDate"
+                    persistent
+                    width="290px"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="filterDate"
+                        label="Tanggal"
+                        prepend-icon="mdi-calendar"
+                        outlined
+                        readonly
+                        :error-messages="dateErrors"
+                        :disabled="radioGroup !== 3"
+                        v-bind="attrs"
+                        v-on="on"
+                        @input="$v.filterDate.$touch"
+                      />
+                    </template>
+                    <v-date-picker
+                      v-model="filterDate"
+                      range
+                      scrollable
+                    >
+                      <v-spacer />
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="datepickerModal = false"
+                      >
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.dialog.save(filterDate)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-dialog>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-dialog>
+          <!-- /filter dialog -->
           <!-- menu -->
         </v-card-title>
         <div v-if="series[0].data.length > 0 && !loadState">
@@ -94,6 +213,7 @@
 // @ is an alias to /src
 import { mapState } from 'vuex'
 import VueApexCharts from 'vue-apexcharts'
+import { required } from 'vuelidate/lib/validators'
 import DataNotFound from '@/components/DataNotFound.vue'
 import Loader from '@/components/ProgressCircle.vue'
 
@@ -105,6 +225,16 @@ export default {
   },
 
   data: () => ({
+    radioGroup: 0,
+    dialog: false,
+    datepickerModal: false,
+    filterWaktu: [
+      { title: 'Hari ini', subtitle: 'Menampilkan semua data pada hari ini', endpoint: 'today' },
+      { title: 'Minggu ini', subtitle: 'Menampilkan semua data pada minggu ini', endpoint: 'this-week' },
+      { title: 'Bulan ini', subtitle: 'Menampilkan semua data pada bulan ini', endpoint: 'this-month' },
+      { title: 'Pilih tanggal', subtitle: 'Menampilkan semua data pada tanggal yang dipilih', endpoint: 'date' }
+    ],
+    filterDate: null,
     sensorData: {},
     series: [{
       name: 'Nutrisi (ppm)',
@@ -140,18 +270,34 @@ export default {
     }
   }),
 
+  validations: {
+    filterDate: {
+      required
+    }
+  },
+
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
     lastRead: {
       get () {
         return this.series[0].data.slice(0).splice(0, 1).toString()
       }
+    },
+    dateErrors () {
+      const errors = []
+      if (!this.$v.filterDate.$dirty) return errors
+      !this.$v.filterDate.required && errors.push('tanggal dibutuhkan!')
+      return errors
     }
   },
 
   watch: {
     // call again the method if the route changes
-    '$route': 'initialize'
+    // '$route': 'initialize'
+    $route (to, from) {
+      this.resetFilter()
+      this.initialize()
+    }
   },
 
   created () {
@@ -163,10 +309,14 @@ export default {
   },
 
   methods: {
-    initialize () {
+    initialize (endpoint = 'today') {
       this.loadstate(true)
-      // ganti jadi detail
-      this.axios.get(`sensor-nutrisi/detail/${this.$route.params.id}`)
+
+      const apiEndpoint = endpoint === 'date'
+        ? `${this.$route.params.id}/${endpoint}/${this.filterDate[0]}/${this.filterDate[1]}`
+        : `${this.$route.params.id}/${endpoint}`
+
+      this.axios.get(`sensor-nutrisi/detail/${apiEndpoint}`)
         .then(response => {
           const data = response.data.data
           console.log('detail read data', data)
@@ -182,6 +332,22 @@ export default {
     },
     loadstate (state) {
       this.$store.commit('layout/setLoadstate', state)
+    },
+    filtered () {
+      if (this.radioGroup === 3 && this.$v.filterDate.$invalid) {
+        this.$store.dispatch('layout/alertFire', {
+          type: 'error',
+          message: 'Tanggal harus diisi!'
+        })
+      } else {
+        console.log('filtered endpoint', this.filterWaktu[this.radioGroup].endpoint)
+        this.dialog = false
+        this.initialize(this.filterWaktu[this.radioGroup].endpoint)
+      }
+    },
+    resetFilter () {
+      this.radioGroup = 0
+      this.filterDate = null
     }
   }
 }

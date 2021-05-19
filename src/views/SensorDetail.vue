@@ -21,7 +21,7 @@
         <v-card-title v-if="!loadState">
           <div>
             <!-- mock -->
-            Sensor {{ sensorData.name_sensor }} &mdash;
+            {{ sensorData.name_sensor }} &mdash;
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <span

@@ -68,7 +68,7 @@
       </router-link>
     </div>
     <div class="overline mt-4 text-center">
-      <a href="https://github.com/fauziru"> @fauziru </a>
+      <a href="https://fauziru.github.io"> @fauziru </a>
     </div>
   </div>
   <!-- sigin modul, register, reset pass word, verify password -->

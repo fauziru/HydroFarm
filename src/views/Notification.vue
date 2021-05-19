@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="isMobile ? '' : 'px-2'">
     <v-tabs-items
       v-model="tab"
       class="rounded-xl elevation-1"
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-// import { mapState } from "vuex";
+import { mapState } from 'vuex'
 import NotificationList from '../components/NotificationList.vue'
 
 export default {
@@ -45,7 +45,8 @@ export default {
       set (value) {
         this.$store.commit('layout/setTab', value)
       }
-    }
+    },
+    ...mapState('layout', ['isMobile'])
   },
   created () {
     console.log('created notification')

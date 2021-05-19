@@ -2,6 +2,7 @@
   <div class="d-flex flex-column flex-grow-1">
     <router-view />
     <div
+      v-if="!this.$route.params.id"
       class="col-xl-4 col-12"
       :style=" isMobile ? 'padding: 0px!important;' : ''"
     >

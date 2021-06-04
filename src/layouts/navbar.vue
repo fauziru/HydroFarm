@@ -162,7 +162,7 @@
               </v-list-item-content>
               <v-list-item-action class="align-self-center">
                 <v-list-item-action-text>
-                  {{ item.created_at | cD }}
+                  {{ item.data.created_at | cD }}
                 </v-list-item-action-text>
               </v-list-item-action>
             </v-list-item>
@@ -260,7 +260,7 @@ export default {
   },
   methods: {
     ...mapActions('layout', ['draw', 'menuBar']),
-    ...mapActions('notification', ['readNotif', 'getUnreadnotif', 'readAll']),
+    ...mapActions('notification', ['readNotif', 'getUnreadnotif', 'readAll', 'updateUnreadnotif']),
     changeColor () {
       var themeColor = document.querySelector('meta[name=theme-color]')
       if (document.body.scrollTop > 70 || document.documentElement.scrollTop > 70) {
@@ -278,7 +278,7 @@ export default {
     },
     listenEventNotification () {
       window.Echo.private(`App.User.${this.$store.state.auth.id}`).notification(notification => {
-        this.getUnreadnotif()
+        this.updateUnreadnotif(notification)
       })
     }
   }

@@ -3,8 +3,7 @@ import axios from '../plugins/vueaxios'
 
 const NOTIF_MUTATIONS = {
   SET_UNREAD: 'SET_UNREAD',
-  SET_ALL: 'SET_PAYLOAD',
-  LOGOUT: 'LOGOUT'
+  UPDATE_UNREAD: 'UPDATE_UNREAD'
 }
 
 const state = () => ({
@@ -15,6 +14,9 @@ const state = () => ({
 const mutations = {
   [NOTIF_MUTATIONS.SET_UNREAD] (state, payload) {
     state.notifUnread = payload
+  },
+  [NOTIF_MUTATIONS.UPDATE_UNREAD] (state, notification) {
+    state.notifUnread.unshift(notification)
   }
 }
 
@@ -31,6 +33,9 @@ const actions = {
   readAll ({ commit }) {
     axios.get('notification/readall')
     commit(NOTIF_MUTATIONS.SET_UNREAD, [])
+  },
+  updateUnreadnotif ({ commit }, newNotification) {
+    commit(NOTIF_MUTATIONS.UPDATE_UNREAD, newNotification)
   }
 }
 

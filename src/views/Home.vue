@@ -412,10 +412,14 @@ export default {
         // add newest data of read sensor
         this.series[0].data.unshift(read.data.read_nutrisi)
         this.chartOptions.xaxis.categories.unshift(read.data.created_at)
+        // remove latest data of read sensor
+        this.series[0].data.pop()
+        this.chartOptions.xaxis.categories.pop()
         // this.$refs.chart.updateSeries([{ data: read.data.read_nutrisi }])
         this.$refs.chart.updateSeries([{
           data: this.series[0].data
         }])
+        console.log('jumlah data realtime 50', this.series[0].data.length())
       })
     }
   }

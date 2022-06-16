@@ -1,4 +1,4 @@
-# hidroponik-farm
+# DHydro WebApps
 
 ## Project setup
 ```

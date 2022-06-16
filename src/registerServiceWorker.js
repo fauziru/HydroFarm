@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === 'production') {
         'App is being served from cache by a service worker.\n' +
           'For more details, visit https://goo.gl/AFskqB'
       )
+      localStorage.setItem('offlineState', false)
     },
     registered () {
       console.log('Service worker has been registered.')
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === 'production') {
       console.log(
         'No internet connection found. App is running in offline mode.'
       )
+      localStorage.setItem('offlineState', true)
     },
     error (error) {
       console.error('Error during service worker registration:', error)

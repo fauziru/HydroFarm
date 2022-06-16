@@ -63,13 +63,13 @@
             @input="$v.form2.email.$touch"
           />
           <v-text-field
-            v-model="form2.name"
+            v-model="form2.name_user"
             :error-messages="nameErrors"
             label="Nama"
             outlined
             required
             clearable
-            @input="$v.form2.name.$touch"
+            @input="$v.form2.name_user.$touch"
           />
           <v-text-field
             v-model="form2.password"
@@ -146,10 +146,11 @@ export default {
     },
     form2: {
       email: '',
-      name: '',
+      name_user: '',
       password: '',
       coPassword: ''
-    }
+    },
+    isEmailUniqe: true
   }),
   validations: {
     form1: {
@@ -162,7 +163,7 @@ export default {
         required,
         email
       },
-      name: {
+      name_user: {
         required
       },
       password: {
@@ -175,6 +176,12 @@ export default {
       }
     }
   },
+  updated () {
+    if (this.$v.form2.email.email && this.$v.form2.email.required) {
+      this.getCekEmail()
+      console.log('cek email', this.isEmailUniqe)
+    }
+  },
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
     keyErrors () {
@@ -185,13 +192,14 @@ export default {
     },
     nameErrors () {
       const errors = []
-      if (!this.$v.form2.name.$dirty) return errors
-      !this.$v.form2.name.required && errors.push('nama dibutuhkan!')
+      if (!this.$v.form2.name_user.$dirty) return errors
+      !this.$v.form2.name_user.required && errors.push('nama dibutuhkan!')
       return errors
     },
     emailErrors () {
       const errors = []
       if (!this.$v.form2.email.$dirty) return errors
+      !this.isEmailUniqe && errors.push('email sudah digunakan!')
       !this.$v.form2.email.required && errors.push('email dibutuhkan!')
       !this.$v.form2.email.email && errors.push('email tidak valid!')
       return errors
@@ -220,26 +228,36 @@ export default {
         this.axios.post('registrasiKey', this.form1)
           .then(response => {
             console.log('response key validation', response.data)
-            !response.data.data.validKey
-              ? this.alert('Key registrasi tidak valid!', 'error')
-              : this.e6 = 2
+            if (!response.data.data.validKey) {
+              this.alert('Key registrasi tidak valid!', 'error')
+            } else {
+              this.alert('Key registrasi valid!', 'success')
+              this.e6 = 2
+            }
             this.form1.validKey = response.data.data.validKey
             this.loadstate(false)
           })
       }
     },
-    registrationAttemp () {
-      if (this.$v.form2.$invalid) {
+    async registrationAttemp () {
+      if (this.$v.form2.$invalid || !this.isEmailUniqe) {
         this.alert('Harap isi form dengan benar!', 'error')
       } else {
-        this.loadstate(true)
-        this.e6 = 3
-        this.$store.dispatch('auth/register', this.form2)
-          .then(() => {
-            this.loadstate(false)
-          })
-          .catch(() => { this.e6 = 2 })
+        try {
+          this.loadstate(true)
+          this.e6 = 3
+          await this.$store.dispatch('auth/register', this.form2)
+          this.loadstate(false)
+        } catch (error) {
+          this.e6 = 2
+          this.loadstate(false)
+        }
       }
+    },
+    async getCekEmail () {
+      const response = await this.axios.post(`cek-email?secret=${process.env.VUE_APP_API_SECRET_KEY}`, { email: this.form2.email })
+      // console.log('response cek email', response.data.success)
+      this.isEmailUniqe = response.data.success
     },
     alert (message, type) {
       this.$store.dispatch('layout/alertFire', {

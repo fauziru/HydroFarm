@@ -11,7 +11,7 @@
   >
     <v-list-item class="px-2">
       <v-list-item-avatar>
-        <v-img :src="user.img_path || `https://ui-avatars.com/api/?name=${user.name}`" />
+        <v-img :src="srcImage" />
       </v-list-item-avatar>
 
       <v-list-item-title>{{ user.email_address }}</v-list-item-title>
@@ -26,23 +26,30 @@
 
     <v-divider />
 
-    <v-list dense>
-      <v-list-item
-        v-for="item in items"
-        :key="item.title"
-        color="primary"
-        link
-        :to="item.link"
-      >
-        <v-list-item-icon>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-item-icon>
+    <!-- side bar menu item -->
+    <v-list
+      dense
+      shaped
+    >
+      <template v-for="item in items">
+        <v-list-item
+          :key="item.title"
+          color="primary"
+          link
+          :to="item.link"
+          v-if="renderListAdmin(user.role, item.role)"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-        <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
+    <!-- /side bar menu item -->
 
     <template v-slot:append>
       <div class="pa-2">
@@ -55,7 +62,7 @@
         >
           <div v-if="!loadState">
             <div v-if="!mini">
-              Logout
+              Keluar
               <v-icon> mdi-logout </v-icon>
             </div>
             <v-icon v-else>
@@ -79,21 +86,26 @@ export default {
     Loader
   },
   data: () => ({
+    sourceImage: process.env.VUE_APP_IMAGE_BASE + 'storage/images/avatar/',
     items: [
-      { title: 'Sensor', icon: 'mdi-leak', link: { name: 'sensor' } },
-      { title: 'Rakit Apung', icon: 'mdi-bed-outline', link: '#' },
-      { title: 'Tray', icon: 'mdi-tray', link: '#' },
-      { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
-      { title: 'Users', icon: 'mdi-account-group-outline', link: { name: 'user' } },
-      { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', link: { name: 'dashboard' } },
-      { title: 'My Account', icon: 'mdi-account-outline', link: { name: 'account' } },
-      { title: 'Settings', icon: 'mdi-cog-outline', link: { name: 'setting' } }
+      { title: 'Dashboard', icon: 'mdi-view-dashboard-outline', link: { name: 'dashboard' }, role: ['admin', 'user'] },
+      { title: 'Node', icon: 'mdi-access-point', link: { name: 'node' }, role: ['admin'] },
+      { title: 'Sensor', icon: 'mdi-leak', link: { name: 'sensor' }, role: ['admin'] },
+      // { title: 'Rakit Apung', icon: 'mdi-bed-outline', link: '#' },
+      // { title: 'Tray', icon: 'mdi-tray', link: '#' },
+      // { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
+      { title: 'Pengguna', icon: 'mdi-account-group-outline', link: { name: 'user' }, role: ['admin'] },
+      { title: 'Akun saya', icon: 'mdi-account-outline', link: { name: 'account' }, role: ['admin', 'user'] },
+      { title: 'Pengaturan', icon: 'mdi-cog-outline', link: { name: 'setting' }, role: ['admin'] }
     ]
   }),
 
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
     ...mapState('auth', ['user']),
+    srcImage () {
+      return this.user.img_path ? this.sourceImage + this.user.img_path : `https://ui-avatars.com/api/?name=${this.user.name}&background=b0d388`
+    },
     drawerside: {
       get () {
         return this.$store.state.layout.drawerSide
@@ -124,6 +136,9 @@ export default {
       this.$store
         .dispatch('auth/logout')
         .then(() => this.$store.commit('layout/setLoadstate', false))
+    },
+    renderListAdmin (userRole, itemRole) {
+      return itemRole.includes(userRole)
     }
   }
 }

@@ -5,7 +5,7 @@
         v-if="!loadState"
         class="text-capitalize"
       >
-        {{ section }}
+        {{ titleCase(section) }}
         <v-spacer />
         <v-menu
           v-if="!isMobile"
@@ -53,6 +53,9 @@
           <v-list>
             <v-list-item @click="readall">
               <v-list-item-title>Tandai baca semua</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="readall">
+              <v-list-item-title>Matikan push notification</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-bottom-sheet>
@@ -147,14 +150,14 @@ export default {
     window.addEventListener('scroll', this.infiniteLoad)
   },
   beforeMount () {
-    console.log('to top')
+    // console.log('to top')
     window.scrollTo(0, 0)
   },
   beforeDestroy () {
     // this.section = null
   },
   destroyed () {
-    console.log('component destryoed')
+    // console.log('component destryoed')
     window.removeEventListener('scroll', this.infiniteLoad)
   },
   methods: {
@@ -170,19 +173,22 @@ export default {
       if (data.length > 0) {
         this.notifications.push(...data)
       } else {
-        console.log('semua data sudah dimuat')
+        // console.log('semua data sudah dimuat')
         this.maxPage = true
       }
       this.loadstate(false)
     },
     infiniteLoad () {
-      console.log('section', this.section)
+      // console.log('section inf load', this.section)
       let bottomOfWindow =
-        document.documentElement.scrollTop + window.innerHeight ===
+        Math.ceil(document.documentElement.scrollTop + window.innerHeight) >=
         document.documentElement.offsetHeight
+      // console.log(bottomOfWindow, this.maxPage, this.loadState)
+      // console.log(document.documentElement.scrollTop, window.innerHeight, document.documentElement.offsetHeight)
       if (bottomOfWindow && !this.maxPage && this.loadState === false) {
-        console.log('reach bottom', this.section)
-        console.log('update')
+        // console.log('reach bottom', this.section)
+        // console.log('update')
+        document.documentElement.scrollTop -= 25
         this.getNotification()
       }
     },
@@ -190,12 +196,26 @@ export default {
       this.$store.commit('layout/setLoadstate', state)
     },
     read (link, id, stat) {
-      if (!stat) this.readNotif(id)
+      if (!stat) {
+        const index = this.notifications.findIndex(notif => notif.id === id)
+        console.log('index notif', index)
+        this.notifications[index] = Object.assign(this.notifications[index], { read_at: new Date().toISOString() })
+        this.readNotif(id)
+      }
       this.$router.push({ path: link })
     },
     readall () {
       this.bottomSheet = false
       this.readAll()
+      this.notifications.map((notif) => !notif.read_at ? Object.assign(notif, { read_at: new Date().toISOString() }) : notif)
+    },
+    titleCase (sec) {
+      const title = {
+        'all': 'semua',
+        'sensor': 'sensor',
+        'activity': 'aktivitas'
+      }
+      return title[sec]
     }
   }
 }

@@ -14,7 +14,7 @@
         />
       </v-card-title>
       <v-card-title class="display-2 mb-3 justify-center px-2 px-md-15">
-        Danur Farm
+        Dhydro
       </v-card-title>
       <v-card-subtitle>Masuk ke akun anda</v-card-subtitle>
       <v-card-text>
@@ -67,8 +67,10 @@
         Daftar
       </router-link>
     </div>
-    <div class="overline mt-4 text-center">
+    <div class="overline mt-4 text-center d-flex" :style="{ justifyContent: 'center'}">
       <a href="https://fauziru.github.io"> @fauziru </a>
+      <!-- <p :style="{ marginInline: '4px' }"> | </p>
+      <a > About </a> -->
     </div>
   </div>
   <!-- sigin modul, register, reset pass word, verify password -->

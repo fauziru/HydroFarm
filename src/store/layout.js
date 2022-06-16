@@ -18,23 +18,27 @@ const state = () => ({
     {
       name: 'Dashboard',
       icon: 'mdi-view-dashboard',
-      link: { name: 'dashboard' }
+      link: { name: 'dashboard' },
+      role: ['admin', 'user']
     },
     {
-      name: 'Activity',
+      name: 'Aktifitas',
       icon: 'mdi-history',
-      link: { name: 'activity' }
+      link: { name: 'activity' },
+      role: ['admin', 'user']
     },
     {
-      name: 'Schedule',
-      icon: 'mdi-sprout',
-      link: { name: 'schedule' }
+      name: 'Pengaturan',
+      icon: 'mdi-cog',
+      link: { name: 'setting' },
+      role: ['admin']
     }
   ]
 })
 
 const mutations = {
   [LAYOUT_MUTATIONS.SET_TAB] (state, { tab, tabs }) {
+    console.log('Change tab', state.tab)
     state.tab = tab
     state.tabs = tabs
   },
@@ -80,11 +84,11 @@ const actions = {
       : commit('setMini', !state.mini)
   },
 
-  alertFire ({ commit }, item) {
-    commit('setAlert', item)
+  async alertFire ({ commit }, item) {
+    await commit('setAlert', item)
     commit('setAlertState', true)
-    setTimeout(() => {
-      commit('setAlertState', false)
+    setTimeout(async () => {
+      await commit('setAlertState', false)
       commit('setAlert', { type: '', message: '' })
     }, 2000)
   },

@@ -8,13 +8,13 @@
     >
       <div class="d-flex align-center py-3">
         <div class="display-1">
-          Sensor
+          Node
         </div>
         <v-spacer />
-        <!-- add item -->
+        <!-- add and edit item -->
         <v-dialog
           v-model="dialog"
-          max-width="500px"
+          lat-width="500px"
         >
           <!-- <template v-slot:activator="{ on, attrs}">
             <v-btn
@@ -38,29 +38,29 @@
                 <v-form :disabled="loadState">
                   <v-row>
                     <v-text-field
-                      v-model="editedItem.name_sensor"
+                      v-model="editedItem.name_node"
                       outlined
                       :error-messages="nameErrors"
                       label="Sensor name"
-                      @input="$v.editedItem.name_sensor.$touch"
+                      @input="$v.editedItem.name_node.$touch"
                     />
                   </v-row>
                   <v-row>
                     <v-text-field
-                      v-model="editedItem.batas.max"
+                      v-model="editedItem.lat"
                       outlined
                       :error-messages="batasErrors"
-                      label="Batas Maksimal"
-                      @input="$v.editedItem.batas.max.$touch"
+                      label="Latitude"
+                      @input="$v.editedItem.lat.$touch"
                     />
                   </v-row>
                   <v-row>
                     <v-text-field
-                      v-model="editedItem.batas.min"
+                      v-model="editedItem.lng"
                       outlined
                       :error-messages="batasErrors"
-                      label="Batas Minimal"
-                      @input="$v.editedItem.batas.min.$touch"
+                      label="Longitude"
+                      @input="$v.editedItem.lng.$touch"
                     />
                   </v-row>
                 </v-form>
@@ -88,12 +88,12 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <!-- add item -->
+        <!-- add and item -->
       </div>
-      <!-- tabel sensor -->
+      <!-- tabel node -->
       <v-data-table
         :headers="headers"
-        :items="sensors"
+        :items="nodes"
         :search="search"
         sort-by="calories"
         class="elevation-1 rounded-xl"
@@ -163,26 +163,42 @@
               <span
                 v-bind="attrs"
                 v-on="on"
+                @click.stop.prevent="copy(item.id)"
               >{{ index + 1 }}</span>
             </template>
-            <m-copiedlabel :text="item.id" />
+            <span :id="item.id">{{ item.id }}</span>
+            <!-- <m-copiedlabel :text="item.id" /> -->
           </v-tooltip>
         </template>
 
-        <template v-slot:[`item.batas`]="{ item }">
-          {{ `max: ${item.batas.max}, min: ${item.batas.min}` }}
+        <template v-slot:[`item.last_reads`]="{ item }">
+          {{ `${item.last_reads.length}` }}
         </template>
 
-        <template v-slot:[`item.status`]="{ item }">
+        <template v-slot:[`item.konektivitas`]="{ item }">
           <v-chip
-            :color="item.status ? 'green' : 'red'"
+            :color="item.konektivitas ? 'green' : 'red'"
             dark
           >
-            {{ item.status ? 'connected' : 'disconnected' }}
+            {{ item.konektivitas ? 'connected' : 'disconnected' }}
           </v-chip>
         </template>
 
-        <template v-if="user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
+        <!-- action button -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            icon
+            depressed
+          >
+            <v-icon
+              small
+              @click="editItem(item, 'delete')"
+            >
+              mdi-delete
+            </v-icon>
+          </v-btn>
+        </template>
+        <!-- <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             icon
             depressed
@@ -205,7 +221,7 @@
               mdi-pencil
             </v-icon>
           </v-btn>
-          <!-- <v-btn
+          <v-btn
             icon
             depressed
           >
@@ -215,8 +231,8 @@
             >
               mdi-delete
             </v-icon>
-          </v-btn> -->
-        </template>
+          </v-btn>
+        </template> -->
 
         <template v-slot:no-data>
           <Loader v-if="loadState" />
@@ -226,23 +242,23 @@
           />
         </template>
       </v-data-table>
-      <!-- /tabel sensor -->
+      <!-- /tabel node -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import { required, minLength, maxValue } from 'vuelidate/lib/validators'
-import CopiedLabel from '@/components/CopiedLabel.vue'
+// import CopiedLabel from '@/components/CopiedLabel.vue'
 import Loader from '@/components/ProgressCircle.vue'
 import NoData from '../components/NoData.vue'
 
 export default {
   components: {
     Loader,
-    'm-copiedlabel': CopiedLabel,
     NoData
+    // 'm-copiedlabel': CopiedLabel
   },
   data: () => ({
     search: '',
@@ -250,74 +266,69 @@ export default {
     dialogDelete: false,
     headers: [
       { text: 'No.', value: 'id' },
-      { text: 'Sensor', align: 'start', sortable: false, value: 'name_sensor' },
-      { text: 'Batas', value: 'batas' },
-      { text: 'Node', value: 'node' },
-      { text: 'Status', value: 'status' },
-      { text: 'Bacaan terakhir', value: 'last_read' },
+      { text: 'Node', align: 'start', sortable: false, value: 'name_node' },
+      { text: 'Latitude', value: 'lat' },
+      { text: 'Longitude', value: 'lng' },
+      { text: 'Jumlah Sensor', value: 'last_reads' },
+      { text: 'Konektivitas', value: 'konektivitas' },
       { text: '', value: 'actions', sortable: false }
+    //   { text: 'Node', value: 'node' },
+    //   { text: 'Bacaan terakhir', value: 'last_read' },
     ],
-    sensors: [],
+    nodes: [],
     editedIndex: -1,
     editedItem: {
-      name_sensor: '',
-      batas: {
-        max: 0,
-        min: 0
-      }
+      name_node: '',
+      lat: 0,
+      lng: 0
     },
     defaultItem: {
-      name_sensor: '',
-      batas: {
-        max: 0,
-        min: 0
-      }
+      name_node: '',
+      lat: 0,
+      lng: 0
     }
   }),
   validations: {
     editedItem: {
-      name_sensor: {
+      name_node: {
         required
       },
-      batas: {
-        max: {
-          required,
-          minLength: minLength(1),
-          maxValue: maxValue(99999)
-        },
-        min: {
-          required,
-          minLength: minLength(1),
-          maxValue: maxValue(99999)
-        }
+      lat: {
+        required,
+        minLength: minLength(0),
+        maxValue: maxValue(9999)
+      },
+      lng: {
+        required,
+        minLength: minLength(0),
+        maxValue: maxValue(9999)
       }
     }
   },
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
-    ...mapState('auth', ['user']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
     nameErrors () {
       const errors = []
-      if (!this.$v.editedItem.name_sensor.$dirty) return errors
-      !this.$v.editedItem.name_sensor.required && errors.push('nama sensor dibutuhkan!')
+      if (!this.$v.editedItem.name_node.$dirty) return errors
+      !this.$v.editedItem.name_node.required && errors.push('nama node dibutuhkan!')
       return errors
     },
     batasErrors () {
       const errors = []
-      if (!this.$v.editedItem.batas.max.$dirty || !this.$v.editedItem.batas.min.$dirty) {
+      if (!this.$v.editedItem.lat.$dirty || !this.$v.editedItem.lng.$dirty) {
         return errors
       }
-      if (!this.$v.editedItem.batas.max.required || !this.$v.editedItem.batas.min.required) {
-        errors.push('minimal batas dibutuhkan!')
+      if (!this.$v.editedItem.lat.required || !this.$v.editedItem.lng.required) {
+        errors.push('koordinat dibutuhkan!')
       }
-      if (!this.$v.editedItem.batas.max.minLength || !this.$v.editedItem.batas.min.minLength) {
-        errors.push('Batas minimal dan maksimal tidak boleh kosong!')
+      if (!this.$v.editedItem.lat.minLength || !this.$v.editedItem.lng.minLength) {
+        errors.push('koordinat tidak boleh kosong!')
       }
-      if (!this.$v.editedItem.batas.max.maxValue || !this.$v.editedItem.batas.min.maxValue) {
-        errors.push('Nilai minimal nutrisi tidak bisa lebih dari 9999!')
+      if (!this.$v.editedItem.lat.maxValue || !this.$v.editedItem.lng.maxValue) {
+        errors.push('Nilai koordinat tidak bisa lebih dari 9999!')
       }
       return errors
     }
@@ -342,45 +353,48 @@ export default {
   },
 
   methods: {
-    ...mapActions('layout', ['alertFire']),
     async initialize () {
-      this.sensors = []
+      this.nodes = []
       this.loadstate(true)
       // add axios get
       try {
-        const { data } = await this.axios.get('sensor')
-        this.sensors = data.data
-        console.log('data sensor', this.sensors)
+        const { data } = await this.axios.get('node')
+        this.nodes = data.data.nodes
+        console.log('data node', this.nodes)
         this.loadstate(false)
       } catch (error) {
         this.loadstate(false)
         console.log('error store data', error)
-        this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
+        this.alert('Terjadi kesalahan pada server!', 'error')
       }
     },
+
     editItem (item, mode) {
-      this.editedIndex = this.sensors.indexOf(item)
+      this.editedIndex = this.nodes.indexOf(item)
       this.editedItem = Object.assign({}, item)
       mode === 'editNew'
         ? this.dialog = true
         : this.dialogDelete = true
     },
+
     deleteItemConfirm () {
       // add axios.delete
       this.loadstate(true)
-      this.axios.delete(`sensor/${this.editedItem.id}`)
+      this.axios.delete(`node/${this.editedItem.id}`)
         .then(response => {
+          this.alert('Berhasil menghapus node!', 'success')
           console.log('delete item', response)
-          this.sensors.splice(this.editedIndex, 1)
+          this.nodes.splice(this.editedIndex, 1)
           this.loadstate(false)
           this.close()
         })
         .catch(error => {
           this.loadstate(false)
           console.log('error delete data', error)
-          this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
+          this.alert('Terjadi kesalahan pada server!', 'error')
         })
     },
+
     close (mode) {
       mode === 'editNew'
         ? this.dialog = false
@@ -393,49 +407,72 @@ export default {
     },
     save () {
       if (this.$v.editedItem.$invalid) {
-        this.$store.dispatch('layout/alertFire', {
-          type: 'error',
-          message: 'Semua kolom harus diisi!'
-        })
+        this.alert('Semua kolom harus diisi!', 'error')
       } else {
         console.log('simpan', this.editedItem)
         this.loadstate(true)
         if (this.editedIndex > -1) {
           // save edit
           // add axios.put
-          this.axios.put(`sensor/${this.editedItem.id}`, this.editedItem)
+          this.axios.put(`node/${this.editedItem.id}`, this.editedItem)
             .then(response => {
-              // Object.assign(this.sensors[this.editedIndex], response.data.data)
+              Object.assign(this.nodes[this.editedIndex], response.data.data)
               this.loadstate(false)
               this.close('editNew')
-              this.$store.dispatch('layout/alertFire', {
-                type: 'success',
-                message: 'Berhasil menyimpan perubahan!'
-              })
             })
             .catch(error => {
               console.log('error put data', error)
-              this.alertFire({ type: 'error', message: 'Terjadi kesalahan pada server!' })
+              this.alert('Terjadi kesalahan pada server!', 'error')
+              this.loadstate(false)
+            })
+        } else {
+          // save baru
+          // add axios.post
+          this.axios.post('node', this.editedItem)
+            .then(response => {
+              this.nodes.push(response.data.data)
+              this.loadstate(false)
+              this.close('editNew')
+            })
+            .catch(error => {
+              console.log('error store data', error)
+              this.alert('Terjadi kesalahan pada server!', 'error')
               this.loadstate(false)
             })
         }
       }
     },
+    copy (id) {
+      var range = document.createRange()
+      console.log('range', range)
+      range.selectNode(document.getElementById(id))
+      window.getSelection().removeAllRanges() // clear current selection
+      window.getSelection().addRange(range) // to select text
+      document.execCommand('copy')
+      window.getSelection().removeAllRanges() // to deselect
+      this.alert('Teks berhasil disalin!', 'success')
+    },
+    alert (message, type) {
+      this.$store.dispatch('layout/alertFire', {
+        type: type,
+        message: message
+      })
+    },
+    loadstate (val) {
+      this.$store.commit('layout/setLoadstate', val)
+    },
     realtimeEventListener () {
       window.Echo.private('events')
-        .listen('UpdateSensor', (event) => {
-          console.log('event update sensor', event)
-          const newSensor = event.data
-          const indexSensor = this.sensors.findIndex(sensor => sensor.id === newSensor.id)
-          indexSensor === -1 ? this.sensors.push(newSensor) : this.sensors.splice(indexSensor, 1, newSensor)
+        .listen('UpdateNode', (event) => {
+          console.log('event update node', event)
+          const newNode = event.data
+          const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
+          indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
         })
     },
     removeRealtimeEventListener () {
       window.Echo.private('events')
-        .stopListening('UpdateSensor')
-    },
-    loadstate (val) {
-      this.$store.commit('layout/setLoadstate', val)
+        .stopListening('UpdateNode')
     }
   }
 }

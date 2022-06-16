@@ -7,17 +7,21 @@
     :dark="dark"
     app
   >
+    <!-- menu dan back button -->
     <v-btn
       v-if="this.$route.meta.backButton"
       icon
       depressed
       link
+      aria-label="Back"
       @click="hasHistory() ? $router.go(-1) : $router.push('/')"
     >
       <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
+    <!-- /menu dan back button -->
     <v-app-bar-nav-icon
       v-else
+      aria-label="Draw Menu"
       @click.stop="draw()"
     />
     <v-btn
@@ -39,7 +43,7 @@
       v-text="this.$route.name"
     />
     <!-- menu navbar -->
-    <v-menu
+    <!-- <v-menu
       v-if="!isMobile"
       left
       offset-y
@@ -77,14 +81,13 @@
           </div>
         </div>
       </v-card>
-    </v-menu>
+    </v-menu> -->
 
     <!-- notification -->
     <v-menu
       v-if="notifUnread"
       nudge-left
       offset-y
-      z-index="12"
     >
       <template v-slot:activator="{ on, attrs }">
         <div style="margin-right: -15px">
@@ -102,6 +105,7 @@
               depressed
               v-bind="attrs"
               v-on="on"
+              aria-label="Notifikasi Belum dibaca"
             >
               <v-icon>
                 mdi-bell-outline
@@ -144,7 +148,7 @@
             <v-list-item
               v-for="(item, i) in notifUnread"
               :key="i"
-              :to="item.data.link || { name: 'notification' }"
+              :to="item.link || { name: 'notification' }"
               link
               @click="readNotif(item.id)"
             >
@@ -162,7 +166,7 @@
               </v-list-item-content>
               <v-list-item-action class="align-self-center">
                 <v-list-item-action-text>
-                  {{ item.data.created_at | cD }}
+                  {{ item.created_at | cD }}
                 </v-list-item-action-text>
               </v-list-item-action>
             </v-list-item>
@@ -252,11 +256,12 @@ export default {
     window.addEventListener('scroll', this.changeColor)
   },
   mounted () {
-    console.log('notif unread on navbar', this.notifUnread)
+    // console.log('notif unread on navbar', this.notifUnread)
     this.listenEventNotification()
   },
   destroyed () {
     window.removeEventListener('scroll', this.changeColor)
+    this.removeListenEventNotification()
   },
   methods: {
     ...mapActions('layout', ['draw', 'menuBar']),
@@ -278,8 +283,12 @@ export default {
     },
     listenEventNotification () {
       window.Echo.private(`App.User.${this.$store.state.auth.id}`).notification(notification => {
+        console.log('terima update notif', notification)
         this.updateUnreadnotif(notification)
       })
+    },
+    removeListenEventNotification () {
+      window.Echo.leave(`App.User.${this.$store.state.auth.id}`)
     }
   }
 }

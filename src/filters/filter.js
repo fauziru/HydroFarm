@@ -43,13 +43,13 @@ Vue.filter('typeNotif', function (section, attribute) {
   const keyIconColor = [
     {
       type: 'AppNotificationsNutrisiKurang',
-      title: 'Nutrisi Kurang',
+      title: 'Pemberitahuan sensor',
       icon: 'mdi-leak',
       color: 'green'
     },
     {
       type: 'AppNotificationsAdminActivity',
-      title: 'Activity',
+      title: 'Aktivitas',
       icon: 'mdi-history',
       color: 'blue lighten-1'
     }

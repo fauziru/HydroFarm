@@ -6,7 +6,7 @@
     <v-sheet class="layout-side mx-auto mx-md-1 d-none d-md-flex flex-md-column justify-space-between px-2">
       <div class="mt-3 mt-md-10 pa-2">
         <div class="display-2 font-weight-bold primary--text">
-          Danur Farm
+          Dhydro
         </div>
         <p class="title my-2">
           100% All natural & Fresh for health

@@ -7,7 +7,7 @@
       class="rounded-xl elevation-1"
       three-line
     >
-      <v-subheader>Key</v-subheader>
+      <v-subheader>Settings</v-subheader>
       <v-spacer />
       <template v-for="(item, i) in setting">
         <v-list-item
@@ -29,6 +29,7 @@
           </v-list-item-content>
           <v-list-item-action class="align-self-center">
             <v-btn
+              aria-label="Open"
               text
               depressed
               icon
@@ -51,7 +52,9 @@ export default {
   data: () => ({
     setting: [
       { title: 'Registrasi Key', subtitle: 'Key registrasi untuk pendaftaran user baru', icon: 'mdi-key', link: { name: 'registrasi key' } },
-      { title: 'API Key', subtitle: 'Key API untuk membatasi hak akses penggunaan API', icon: 'mdi-key', link: { name: 'api key' } }
+      { title: 'API Key', subtitle: 'Key API untuk membatasi hak akses penggunaan API', icon: 'mdi-key', link: { name: 'api key' } },
+      { title: 'Layout', subtitle: 'Upload atau ubah layout pemetaan sensor', icon: 'mdi-map-search', link: { name: 'layout sensor' } },
+      { title: 'About', subtitle: 'Tentang web app Dhydro', icon: 'mdi-information-outline', link: { name: 'about' } }
     ]
   }),
   computed: {

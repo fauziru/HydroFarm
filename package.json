@@ -1,6 +1,6 @@
 {
-  "name": "hidroponik-farm",
-  "version": "0.1.0",
+  "name": "Dhydro",
+  "version": "0.1.2",
   "private": true,
   "engines": {
     "node": "14.x",
@@ -18,6 +18,7 @@
     "core-js": "^3.6.5",
     "js-cookie": "^2.2.1",
     "laravel-echo": "^1.10.0",
+    "leaflet": "^1.7.1",
     "pusher-js": "^7.0.3",
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "*",
@@ -25,7 +26,9 @@
     "vue-apexcharts": "^1.6.0",
     "vue-axios": "^3.2.4",
     "vue-loader": "^15.9.6",
+    "vue-mqtt": "^2.0.3",
     "vue-router": "^3.2.0",
+    "vue2-leaflet": "^2.7.1",
     "vuelidate": "^0.7.6",
     "vuetify": "^2.4.0",
     "vuex": "^3.4.0",

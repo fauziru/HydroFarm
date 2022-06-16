@@ -3,6 +3,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import '@mdi/font/css/materialdesignicons.css'
+import 'leaflet/dist/leaflet.css'
 import './filters/filter'
 import router from './router'
 import store from './store'
@@ -10,8 +11,11 @@ import axios from './plugins/vueaxios'
 import vuetify from './plugins/vuetify'
 import vuelidate from './plugins/vuelidate'
 import vueapexcharts from './plugins/vueapexcharts'
+import vuemqtt from './plugins/vuemqtt'
 import './registerServiceWorker'
 import Echo from 'laravel-echo'
+
+// console.log = () => {}
 
 window.Pusher = require('pusher-js')
 // set echo and pusher
@@ -53,6 +57,7 @@ new Vue({
   vuetify,
   axios,
   vuelidate,
+  vuemqtt,
   vueapexcharts,
   render: h => h(App)
 }).$mount('#app')

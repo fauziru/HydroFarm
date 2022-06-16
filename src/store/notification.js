@@ -35,6 +35,7 @@ const actions = {
     commit(NOTIF_MUTATIONS.SET_UNREAD, [])
   },
   updateUnreadnotif ({ commit }, newNotification) {
+    console.log('mutate new unread', newNotification)
     commit(NOTIF_MUTATIONS.UPDATE_UNREAD, newNotification)
   }
 }

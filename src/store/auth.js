@@ -5,7 +5,9 @@ import router from '../router'
 const AUTH_MUTATIONS = {
   SET_USER: 'SET_USER',
   SET_PAYLOAD: 'SET_PAYLOAD',
-  LOGOUT: 'LOGOUT'
+  LOGOUT: 'LOGOUT',
+  SET_IMAGE_PROFILE: 'SET_IMAGE_PROFILE',
+  UPDATE_USER: 'UPDATE_USER'
 }
 
 const state = () => ({
@@ -48,6 +50,17 @@ const mutations = {
     state.refresh_token = null
     state.expires_in = null
     state.isLoggedin = false
+    state.user = null
+  },
+
+  // update image
+  [AUTH_MUTATIONS.SET_IMAGE_PROFILE] (state, image_path) {
+    state.user.img_path = image_path
+  },
+
+  // update partial
+  [AUTH_MUTATIONS.UPDATE_USER] (state, userUpdate) {
+    state.user = Object.assign(state.user, userUpdate)
   }
 }
 
@@ -66,11 +79,11 @@ const actions = {
         { root: true }
       )
       console.log('login attempt')
-    } catch (response) {
-      // console.log('error login', {response})
+    } catch (error) {
+      console.log('error login', error)
       dispatch(
         'layout/alertFire',
-        { type: 'error', message: response.response.data.message },
+        { type: 'error', message: error.response.data.message },
         { root: true }
       )
     }
@@ -87,12 +100,9 @@ const actions = {
         { type: 'success', message: 'Registrasi sukses!' },
         { root: true }
       )
-    } catch (response) {
-      dispatch(
-        'layout/alertFire',
-        { type: 'error', message: response.response.data.message.email[0] },
-        { root: true }
-      )
+      commit('layout/setLoadstate', false, { root: true })
+    } catch (error) {
+      throw error
     }
   },
 
@@ -110,6 +120,14 @@ const actions = {
     await axios.get('/logout')
     commit(AUTH_MUTATIONS.LOGOUT)
     router.push({ name: 'login' })
+  },
+
+  updateAvatar ({ commit }, image_path) {
+    commit(AUTH_MUTATIONS.SET_IMAGE_PROFILE, image_path)
+  },
+
+  updateUser ({ commit }, user) {
+    commit(AUTH_MUTATIONS.UPDATE_USER, {name: user.name_user, address: user.adress, phone_number: user.phone})
   }
 }
 

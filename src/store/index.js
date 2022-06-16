@@ -6,7 +6,7 @@ import Cookies from 'js-cookie'
 import auth from './auth'
 import layout from './layout'
 import notification from './notification'
-import readsensor from './sensorRead'
+import meta from './meta'
 
 Vue.use(Vuex)
 
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     layout,
     auth,
     notification,
-    readsensor
+    meta
   },
   strict: debug,
   plugins: debug ? [createLogger(), state] : [state]

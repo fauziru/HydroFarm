@@ -80,6 +80,10 @@ export default {
           // console.log('key repsonse', response.data.data)
           this.apiKey = response.data.data
           this.loadstate(false)
+          this.$store.dispatch('layout/alertFire', {
+            type: 'success',
+            message: 'Berhasil memperbarui key!'
+          })
         })
     },
     copy () {

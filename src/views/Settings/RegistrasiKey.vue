@@ -64,23 +64,31 @@ export default {
     this.initialize()
   },
   methods: {
-    initialize () {
+    async initialize () {
       this.loadstate(true)
-      this.axios.get('setting/registrasi_key')
-        .then(response => {
-          // console.log('key repsonse', response.data.data)
-          this.registrasiKey = response.data.data
-          this.loadstate(false)
-        })
+      try {
+        const response = await this.axios.get('setting/registrasi_key')
+        this.registrasiKey = response.data.data
+        this.loadstate(false)
+      } catch (error) {
+        console.log('error', error)
+        this.loadstate(false)
+      }
     },
-    generate () {
+    async generate () {
       this.loadstate(true)
-      this.axios.get('setting/generate/registrasi_key')
-        .then(response => {
-          // console.log('key repsonse', response.data.data)
-          this.registrasiKey = response.data.data
-          this.loadstate(false)
+      try {
+        const response = await this.axios.get('setting/generate/registrasi_key')
+        this.registrasiKey = response.data.data
+        this.loadstate(false)
+        this.$store.dispatch('layout/alertFire', {
+          type: 'success',
+          message: 'Berhasil memperbarui key!'
         })
+      } catch (error) {
+        console.log('error', error)
+        this.loadstate(false)
+      }
     },
     copy () {
       var range = document.createRange()

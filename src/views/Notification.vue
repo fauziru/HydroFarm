@@ -35,7 +35,7 @@ export default {
     NotificationList
   },
   data: () => ({
-    tabItem: [{ title: 'all' }, { title: 'sensor' }, { title: 'activity' }]
+    tabItem: [{ title: 'semua' }, { title: 'sensor' }, { title: 'aktivitas' }]
   }),
   computed: {
     tab: {
@@ -49,8 +49,7 @@ export default {
     ...mapState('layout', ['isMobile'])
   },
   created () {
-    console.log('created notification')
-    this.$store.commit('layout/SET_TAB', { tab: true, tabs: this.tabItem })
+    this.$store.commit('layout/SET_TAB', { tab: this.$route.meta.activity ? 2 : 0, tabs: this.tabItem })
   },
   beforeDestroy () {
     this.$store.commit('layout/SET_TAB', { tab: null, tabs: null })

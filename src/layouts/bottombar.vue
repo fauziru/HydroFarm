@@ -7,16 +7,18 @@
     color="primary"
     app
   >
-    <v-btn
-      v-for="(item, index) in menuBar"
-      :key="index"
-      :to="item.link"
-    >
-      <span>{{ item.name }}</span>
-      <v-icon large>
-        {{ item.icon }}
-      </v-icon>
-    </v-btn>
+    <template v-for="(item, index) in menuBar">
+      <v-btn
+        v-if="renderListAdmin(user.role, item.role)"
+        :key="index"
+        :to="item.link"
+      >
+        <span>{{ item.name }}</span>
+        <v-icon large>
+          {{ item.icon }}
+        </v-icon>
+      </v-btn>
+    </template>
   </v-bottom-navigation>
 </template>
 
@@ -24,8 +26,18 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState('layout', ['isMobile', 'drawerSide', 'menuBar'])
+    ...mapState('layout', ['isMobile', 'drawerSide', 'menuBar']),
+    ...mapState('auth', ['user'])
   },
-  methods: {}
+  methods: {
+    renderListAdmin (userRole, itemRole) {
+      return itemRole.includes(userRole)
+    }
+  }
 }
 </script>
+<style scoped>
+.theme--light.v-bottom-navigation {
+  background-color: #f5f5f5;
+}
+</style>

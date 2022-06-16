@@ -9,6 +9,7 @@
     :style=" isMobile ? 'padding: 0px!important;' : ''"
   >
     <v-card
+      v-if="!notFound"
       class="d-flex flex-grow-1 h-full elevation-1"
       color="white"
       rounded="xl"
@@ -21,7 +22,7 @@
         <v-card-title v-if="!loadState">
           <div>
             <!-- mock -->
-            {{ sensorData.name_sensor }} &mdash;
+            {{ sensorData.node }}/{{ sensorData.name_sensor }} &mdash;
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <span
@@ -29,14 +30,14 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  {{ sensorData.last_read }}
+                  {{ sensorData.last_read_time }}
                 </span>
               </template>
-              <span>{{ sensorData.last_read | cD }}</span>
+              <span>{{ sensorData.last_read_time | cD }}</span>
             </v-tooltip>
             <!-- <span class="caption">
-                    {{ sensorData.last_read }}
-                  </span> -->
+              {{ sensorData.last_read }}
+            </span> -->
           </div>
           <v-spacer />
           <!-- filter dialog -->
@@ -165,21 +166,26 @@
             <div class="d-flex align-center">
               <div class="text-h4 primary--text">
                 <!-- mock -->
-                {{ lastRead }} ppm
+                {{ `${lastRead} ${sensorTipeCondition(sensorData.tipe).satuan}` }}
               </div>
               <v-spacer />
               <div class="d-flex flex-column text-right">
                 <div class="font-weight-bold">
                   <span>
                     <span class="warning--text">
-                      <v-icon color="warning">mdi-dots-hexagon</v-icon>
+                      <v-icon color="warning">{{ sensorTipeCondition(sensorData.tipe).icon }}</v-icon>
                       <!-- mock -->
-                      {{ sensorData.min_nutrisi }}ppm
+                      {{ `batas atas: ${sensorData.batas.max} ${sensorTipeCondition(sensorData.tipe).satuan}` }}
+                    </span>
+                    <span class="warning--text">
+                      <v-icon color="warning">{{ sensorTipeCondition(sensorData.tipe).icon }}</v-icon>
+                      <!-- mock -->
+                      {{ `batas bawah: ${sensorData.batas.min} ${sensorTipeCondition(sensorData.tipe).satuan}` }}
                     </span>
                   </span>
                 </div>
                 <div class="caption">
-                  Minimal Nutrisi
+                  batas notifikasi
                 </div>
               </div>
             </div>
@@ -206,6 +212,15 @@
         <if-nothing v-else />
       </div>
     </v-card>
+    <v-card
+      v-else
+      class="h-full elevation-1"
+      color="white"
+      rounded="xl"
+      min-height="380"
+    >
+      <not-found title="Sensor tidak dapat ditemukan" />
+    </v-card>
   </div>
 </template>
 
@@ -216,28 +231,31 @@ import VueApexCharts from 'vue-apexcharts'
 import { required } from 'vuelidate/lib/validators'
 import DataNotFound from '@/components/DataNotFound.vue'
 import Loader from '@/components/ProgressCircle.vue'
+import NotFound from '../components/NotFound.vue'
 
 export default {
   components: {
     apexchart: VueApexCharts,
     'if-nothing': DataNotFound,
-    Loader
+    Loader,
+    NotFound
   },
 
-  data: () => ({
+  data: (instance) => ({
     radioGroup: 0,
     dialog: false,
     datepickerModal: false,
+    notFound: false,
     filterWaktu: [
       { title: 'Hari ini', subtitle: 'Menampilkan semua data pada hari ini', endpoint: 'today' },
-      { title: 'Minggu ini', subtitle: 'Menampilkan semua data pada minggu ini', endpoint: 'this-week' },
-      { title: 'Bulan ini', subtitle: 'Menampilkan semua data pada bulan ini', endpoint: 'this-month' },
+      { title: '7 hari terakhir', subtitle: 'Menampilkan semua data pada 7 hari terakhir', endpoint: 'this-week' },
+      { title: '30 hari terakhir', subtitle: 'Menampilkan semua data pada 30 hari terakhir', endpoint: 'this-month' },
       { title: 'Pilih tanggal', subtitle: 'Menampilkan semua data pada tanggal yang dipilih', endpoint: 'date' }
     ],
     filterDate: null,
     sensorData: {},
     series: [{
-      name: 'Nutrisi (ppm)',
+      name: '',
       data: []
     }],
     chartOptions: {
@@ -246,6 +264,18 @@ export default {
         type: 'area',
         animations: {
           enabled: false
+        },
+        toolbar: {
+          export: {
+            csv: {
+              filename: '',
+              headerCategory: 'dateTime',
+              dateFormatter: (x) => {
+                const date = new Date(x).toISOString()
+                return date
+              }
+            }
+          }
         }
       },
       colors: ['#7cb342'],
@@ -264,7 +294,7 @@ export default {
       },
       tooltip: {
         x: {
-          format: 'dd/MM/yy HH:mm:ss'
+          format: 'yy/MM/dd HH:mm:ss'
         }
       }
     }
@@ -309,26 +339,28 @@ export default {
   },
 
   methods: {
-    initialize (endpoint = 'today') {
+    async initialize (endpoint = 'today') {
       this.loadstate(true)
-
-      const apiEndpoint = endpoint === 'date'
-        ? `${this.$route.params.id}/${endpoint}/${this.filterDate[0]}/${this.filterDate[1]}`
-        : `${this.$route.params.id}/${endpoint}`
-
-      this.axios.get(`sensor-nutrisi/detail/${apiEndpoint}`)
-        .then(response => {
-          const data = response.data.data
-          console.log('detail read data', data)
-          this.series[0].data = data.series_data
-          this.sensorData = data.sensor_data
-          this.chartOptions.xaxis.categories = data.categories_data
-          console.log('sensor data', this.sensorData)
-          this.loadstate(false)
-        })
-        .catch(error => {
-          console.log('error sensor detail', error)
-        })
+      try {
+        const apiEndpoint = endpoint === 'date'
+          ? `${this.$route.params.id}/${endpoint}/${this.filterDate[0]}/${this.filterDate[1]}`
+          : `${this.$route.params.id}/${endpoint}`
+        const response = await this.axios.get(`read/detail/${apiEndpoint}`)
+        const data = response.data.data
+        this.sensorData = data.sensor_data
+        this.series[0].data = data.series_data
+        this.series[0].name = this.sensorTipeCondition(data.sensor_data.tipe).seriesName
+        this.chartOptions.colors[0] = await this.sensorTipeCondition(data.sensor_data.tipe).color
+        this.chartOptions.xaxis.categories = data.categories_data
+        this.chartOptions.chart.toolbar.export.csv.filename = data.sensor_data.node
+        console.log('sensor data', this.sensorData)
+        this.loadstate(false)
+      } catch (error) {
+        const { response } = error
+        console.log('error sensor detail', response)
+        if (response.status === 404) this.notFound = true
+        this.loadstate(false)
+      }
     },
     loadstate (state) {
       this.$store.commit('layout/setLoadstate', state)
@@ -344,6 +376,47 @@ export default {
         this.dialog = false
         this.initialize(this.filterWaktu[this.radioGroup].endpoint)
       }
+    },
+    sensorTipeCondition (tipe) {
+      const condition = {
+        'light': {
+          seriesName: 'Cahaya (lux)',
+          satuan: ' lux',
+          color: '#F18805',
+          icon: ''
+        },
+        'tds': {
+          seriesName: 'Nutrisi (ppm)',
+          satuan: ' ppm',
+          color: '#7cb342',
+          icon: 'mdi-dots-hexagon'
+        },
+        'tds_t': {
+          seriesName: 'Suhu larutan (°C)',
+          satuan: ' °C',
+          color: '#7B9E89',
+          icon: ''
+        },
+        'temp': {
+          seriesName: 'Suhu lingkungan (°C)',
+          satuan: ' °C',
+          color: '#385F71',
+          icon: ''
+        },
+        'hum': {
+          seriesName: 'Kelembaban (%)',
+          satuan: ' %',
+          color: '#385F71',
+          icon: ''
+        },
+        'height': {
+          seriesName: 'Ketinggian (cm)',
+          satuan: ' cm',
+          color: '#385F71',
+          icon: ''
+        }
+      }
+      return condition[tipe]
     },
     resetFilter () {
       this.radioGroup = 0

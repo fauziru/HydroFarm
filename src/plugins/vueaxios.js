@@ -11,17 +11,13 @@ axios.defaults.baseURL = process.env.VUE_APP_API_BASE
 axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    // Check your token for validity, and if needed, refresh the token / force re-login etc.
     const token = store.state.auth.access_token
-    // console.log('on request axios', token)
+    config.headers.Accept = 'application/json'
     if (token) config.headers.Authorization = `Bearer ${token}`
     store.commit('layout/setOffline', false)
     return config
   },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-  }
+  undefined
 )
 
 axios.interceptors.response.use(undefined, function (error) {

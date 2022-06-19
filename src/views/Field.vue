@@ -497,6 +497,8 @@ export default {
       iconUrl: require('leaflet/dist/images/marker-icon.png'),
       shadowUrl: require('leaflet/dist/images/marker-shadow.png')
     })
+  },
+  mounted () {
     this.realtimeEventListener()
   },
   updated () {

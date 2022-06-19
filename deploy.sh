@@ -17,8 +17,10 @@
 # yarn build
 cd dist
 # if you are deploying to a custom domain
+echo 'www.hydrofarm.id' > CNAME
+
 git init
 git add -A
-git commit -m 'Build v1.0.0 Dhydro'
+git commit -m 'Build v1.1.0 Dhydro'
 git push -f git@github.com:fauziru/HydroFarm.git master:production
 cd -

@@ -78,6 +78,9 @@ const actions = {
         { type: 'success', message: 'Login sukses!' },
         { root: true }
       )
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
       console.log('login attempt')
     } catch (error) {
       console.log('error login', error)
@@ -100,7 +103,9 @@ const actions = {
         { type: 'success', message: 'Registrasi sukses!' },
         { root: true }
       )
-      commit('layout/setLoadstate', false, { root: true })
+      setTimeout(() => {
+        window.location.reload()
+      }, 500)
     } catch (error) {
       throw error
     }

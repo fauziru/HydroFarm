@@ -87,6 +87,10 @@ export default {
         })
       } catch (error) {
         console.log('error', error)
+        this.$store.dispatch('layout/alertFire', {
+          type: 'success',
+          message: 'Terjadi kesalahan pada server!'
+        })
         this.loadstate(false)
       }
     },

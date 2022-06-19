@@ -334,6 +334,9 @@ export default {
 
   created () {
     this.initialize()
+  },
+
+  mounted () {
     this.realtimeEventListener()
   },
 

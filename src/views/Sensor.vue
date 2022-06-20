@@ -317,7 +317,7 @@ export default {
         errors.push('Batas minimal dan maksimal tidak boleh kosong!')
       }
       if (!this.$v.editedItem.batas.max.maxValue || !this.$v.editedItem.batas.min.maxValue) {
-        errors.push('Nilai minimal nutrisi tidak bisa lebih dari 9999!')
+        errors.push('Nilai minimal dan maksimal tidak bisa lebih dari 9999!')
       }
       return errors
     }

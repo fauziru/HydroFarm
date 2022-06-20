@@ -42,7 +42,7 @@ Vue.filter('cD', t => {
 Vue.filter('typeNotif', function (section, attribute) {
   const keyIconColor = [
     {
-      type: 'AppNotificationsNutrisiKurang',
+      type: 'AppNotificationsReachThreshold',
       title: 'Pemberitahuan sensor',
       icon: 'mdi-leak',
       color: 'green'

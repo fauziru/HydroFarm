@@ -14,7 +14,7 @@
         <!-- add and edit item -->
         <v-dialog
           v-model="dialog"
-          lat-width="500px"
+          max-width="500px"
         >
           <!-- <template v-slot:activator="{ on, attrs}">
             <v-btn
@@ -185,7 +185,7 @@
         </template>
 
         <!-- action button -->
-        <template v-slot:[`item.actions`]="{ item }">
+        <template v-if="user.role === 'admin'" v-slot:[`item.actions`]="{ item }">
           <v-btn
             icon
             depressed
@@ -318,6 +318,7 @@ export default {
   },
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
+    ...mapState('auth', ['user']),
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },

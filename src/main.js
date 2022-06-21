@@ -15,7 +15,7 @@ import vuemqtt from './plugins/vuemqtt'
 import './registerServiceWorker'
 import Echo from 'laravel-echo'
 
-// console.log = () => {}
+if (process.env.VUE_APP_NODE_ENV === 'production') console.log = () => {}
 
 window.Pusher = require('pusher-js')
 // set echo and pusher

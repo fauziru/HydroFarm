@@ -8,7 +8,8 @@ self.addEventListener('push', async (event) => {
     const options = {
       body: pushNotif.body,
       icon: pushNotif.icon,
-      action: pushNotif.actions[0].action
+      action: pushNotif.actions[0].action,
+      badge: pushNotif.badge
     }
     self.registration.showNotification(pushNotif.title, options)
   } else {

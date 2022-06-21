@@ -32,7 +32,7 @@
             x-small
             color="secondary"
             link
-            :href="`/sensor/${sensor.id}`"
+            :to="`/sensor/${sensor.id}`"
           >
             Lihat Detail
           </v-btn>
@@ -176,7 +176,7 @@ export default {
   }),
   mqtt: {
     'node/+/+' (data, topic) {
-      console.log('topic', topic.split('/'), this.sensor)
+      // console.log('topic', topic.split('/'), this.sensor)
       if (topic.split('/')[1] === this.nodeid && topic.split('/')[2] === this.tipe) {
         // console.log('topic:', 'template/12345')
         // console.log(data, 'Data from mqtt')

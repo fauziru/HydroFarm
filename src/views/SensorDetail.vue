@@ -162,7 +162,7 @@
           <!-- menu -->
         </v-card-title>
         <div v-if="series[0].data.length > 0 && !loadState">
-          <div class="px-4 pb-4">
+          <div v-if="sensorData !== {}" class="px-4 pb-4">
             <div class="d-flex align-center">
               <div class="text-h4 primary--text">
                 <!-- mock -->
@@ -339,21 +339,24 @@ export default {
   },
 
   methods: {
-    async initialize (endpoint = 'today') {
+    async initialize (endpoint) {
       this.loadstate(true)
       try {
         const apiEndpoint = endpoint === 'date'
           ? `${this.$route.params.id}/${endpoint}/${this.filterDate[0]}/${this.filterDate[1]}`
           : `${this.$route.params.id}/${endpoint}`
+        // console.log('api endpoint', apiEndpoint)
         const response = await this.axios.get(`read/detail/${apiEndpoint}`)
         const data = response.data.data
         this.sensorData = data.sensor_data
+        console.log('sensor data', this.series[0].data)
         this.series[0].data = data.series_data
-        this.series[0].name = this.sensorTipeCondition(data.sensor_data.tipe).seriesName
-        this.chartOptions.colors[0] = await this.sensorTipeCondition(data.sensor_data.tipe).color
+        const sensorProps = this.sensorTipeCondition(data.sensor_data.tipe)
+        this.series[0].name = sensorProps.seriesName
+        this.chartOptions.colors[0] = sensorProps.color
+        console.log('tes', sensorProps)
         this.chartOptions.xaxis.categories = data.categories_data
         this.chartOptions.chart.toolbar.export.csv.filename = data.sensor_data.node
-        console.log('sensor data', this.sensorData)
         this.loadstate(false)
       } catch (error) {
         const { response } = error

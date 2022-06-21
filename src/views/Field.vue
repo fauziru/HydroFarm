@@ -429,6 +429,16 @@ export default {
       }
     }
   },
+  mqtt: {
+    'events/node' (val) {
+      // console.log('update real time', val)
+      const enc = new TextDecoder('utf-8')
+      const arr = new Uint8Array(val)
+      const newNode = JSON.parse(enc.decode(arr))
+      const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
+      indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
+    }
+  },
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
     ...mapState('auth', ['user']),
@@ -710,27 +720,28 @@ export default {
       this.bounds[1] = [image.naturalHeight, image.naturalWidth]
     },
     realtimeEventListener () {
+      this.$mqtt.subscribe(`events/node`)
       window.Echo.private('events')
         .listen('UpdateLayout', (event) => {
           const { data } = event
           this.sourceImage = process.env.VUE_APP_IMAGE_BASE + 'storage/images/layout/' + data
-        })
-        .listen('UpdateNode', (event) => {
-          const newNode = event.data
-          const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
-          indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
         })
         .listen('DeleteNode', (event) => {
           const newNode = event.data
           const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
           if (indexNode !== -1) this.nodes.splice(indexNode, 1)
         })
+        // .listen('UpdateNode', (event) => {
+        //   const newNode = event.data
+        //   const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
+        //   indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
+        // })
     },
     removeRealtimeEventListener () {
       window.Echo.private('events')
         .stopListening('UpdateLayout')
-        .stopListening('UpdateNode')
         .stopListening('DeleteNode')
+        // .stopListening('UpdateNode')
     }
   }
 }

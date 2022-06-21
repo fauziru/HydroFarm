@@ -1,3 +1,4 @@
+workbox.core.skipWaiting();
 self.addEventListener('push', async (event) => {
   console.log('listener push')
   if (event.data) {

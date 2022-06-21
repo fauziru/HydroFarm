@@ -322,7 +322,15 @@ export default {
       return errors
     }
   },
-
+  mqtt: {
+    'events/sensor' (val) {
+      const enc = new TextDecoder('utf-8')
+      const arr = new Uint8Array(val)
+      const newSensor = JSON.parse(enc.decode(arr))
+      const indexSensor = this.sensors.findIndex(sensor => sensor.id === newSensor.id)
+      indexSensor === -1 ? this.sensors.push(newSensor) : this.sensors.splice(indexSensor, 1, newSensor)
+    }
+  },
   watch: {
     dialog (val) {
       val || this.close('editNew')
@@ -425,18 +433,19 @@ export default {
       }
     },
     realtimeEventListener () {
-      window.Echo.private('events')
-        .listen('UpdateSensor', (event) => {
-          console.log('event update sensor', event)
-          const newSensor = event.data
-          const indexSensor = this.sensors.findIndex(sensor => sensor.id === newSensor.id)
-          indexSensor === -1 ? this.sensors.push(newSensor) : this.sensors.splice(indexSensor, 1, newSensor)
-        })
+      this.$mqtt.subscribe('events/sensor')
+      // window.Echo.private('events')
+      //   .listen('UpdateSensor', (event) => {
+      //     console.log('event update sensor', event)
+      //     const newSensor = event.data
+      //     const indexSensor = this.sensors.findIndex(sensor => sensor.id === newSensor.id)
+      //     indexSensor === -1 ? this.sensors.push(newSensor) : this.sensors.splice(indexSensor, 1, newSensor)
+      //   })
     },
-    removeRealtimeEventListener () {
-      window.Echo.private('events')
-        .stopListening('UpdateSensor')
-    },
+    // removeRealtimeEventListener () {
+    //   window.Echo.private('events')
+    //     .stopListening('UpdateSensor')
+    // },
     loadstate (val) {
       this.$store.commit('layout/setLoadstate', val)
     }

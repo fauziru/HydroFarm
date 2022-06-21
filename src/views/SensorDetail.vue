@@ -331,7 +331,7 @@ export default {
   },
 
   created () {
-    this.initialize()
+    this.initialize('today')
   },
 
   destroyed () {

@@ -15,7 +15,7 @@ import vuemqtt from './plugins/vuemqtt'
 import './registerServiceWorker'
 import Echo from 'laravel-echo'
 
-console.log = () => {}
+// console.log = () => {}
 
 window.Pusher = require('pusher-js')
 // set echo and pusher

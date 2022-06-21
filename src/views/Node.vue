@@ -192,6 +192,17 @@
           >
             <v-icon
               small
+              @click="editItem(item, 'editNew')"
+            >
+              mdi-pencil
+            </v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            depressed
+          >
+            <v-icon
+              small
               @click="editItem(item, 'delete')"
             >
               mdi-delete
@@ -334,6 +345,16 @@ export default {
     }
   },
 
+  mqtt: {
+    'events/UpdateNode' (val) {
+      const enc = new TextDecoder('utf-8')
+      const arr = new Uint8Array(val)
+      const newNode = JSON.parse(enc.decode(arr))
+      const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
+      indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
+    }
+  },
+
   watch: {
     dialog (val) {
       val || this.close('editNew')
@@ -349,10 +370,6 @@ export default {
 
   mounted () {
     this.realtimeEventListener()
-  },
-
-  beforeDestroy () {
-    this.removeRealtimeEventListener()
   },
 
   methods: {
@@ -465,17 +482,7 @@ export default {
       this.$store.commit('layout/setLoadstate', val)
     },
     realtimeEventListener () {
-      window.Echo.private('events')
-        .listen('UpdateNode', (event) => {
-          console.log('event update node', event)
-          const newNode = event.data
-          const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
-          indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
-        })
-    },
-    removeRealtimeEventListener () {
-      window.Echo.private('events')
-        .stopListening('UpdateNode')
+      this.$mqtt.subscribe(`events/UpdateNode`)
     }
   }
 }

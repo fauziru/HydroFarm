@@ -430,7 +430,7 @@ export default {
     }
   },
   mqtt: {
-    'events/node' (val) {
+    'events/UpdateNode' (val) {
       // console.log('update real time', val)
       const enc = new TextDecoder('utf-8')
       const arr = new Uint8Array(val)
@@ -720,7 +720,7 @@ export default {
       this.bounds[1] = [image.naturalHeight, image.naturalWidth]
     },
     realtimeEventListener () {
-      this.$mqtt.subscribe(`events/node`)
+      this.$mqtt.subscribe(`events/UpdateNode`)
       window.Echo.private('events')
         .listen('UpdateLayout', (event) => {
           const { data } = event

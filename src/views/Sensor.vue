@@ -323,7 +323,7 @@ export default {
     }
   },
   mqtt: {
-    'events/sensor' (val) {
+    'events/UpdateSensor' (val) {
       const enc = new TextDecoder('utf-8')
       const arr = new Uint8Array(val)
       const newSensor = JSON.parse(enc.decode(arr))
@@ -346,10 +346,6 @@ export default {
 
   mounted () {
     this.realtimeEventListener()
-  },
-
-  beforeDestroy () {
-    this.removeRealtimeEventListener()
   },
 
   methods: {
@@ -433,19 +429,8 @@ export default {
       }
     },
     realtimeEventListener () {
-      this.$mqtt.subscribe('events/sensor')
-      // window.Echo.private('events')
-      //   .listen('UpdateSensor', (event) => {
-      //     console.log('event update sensor', event)
-      //     const newSensor = event.data
-      //     const indexSensor = this.sensors.findIndex(sensor => sensor.id === newSensor.id)
-      //     indexSensor === -1 ? this.sensors.push(newSensor) : this.sensors.splice(indexSensor, 1, newSensor)
-      //   })
+      this.$mqtt.subscribe('events/UpdateSensor')
     },
-    // removeRealtimeEventListener () {
-    //   window.Echo.private('events')
-    //     .stopListening('UpdateSensor')
-    // },
     loadstate (val) {
       this.$store.commit('layout/setLoadstate', val)
     }

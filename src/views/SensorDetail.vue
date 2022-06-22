@@ -348,6 +348,17 @@ export default {
           : `${this.$route.params.id}/${endpoint}`
         // console.log('api endpoint', apiEndpoint)
         const response = await this.axios.get(`read/detail/${apiEndpoint}`)
+        await this.setData(response)
+        this.loadstate(false)
+      } catch (error) {
+        const { response } = error
+        console.log('error sensor detail', response)
+        if (response.status === 404) this.notFound = true
+        this.loadstate(false)
+      }
+    },
+    setData (response) {
+      return new Promise((resolve) => {
         const data = response.data.data
         this.sensorData = data.sensor_data
         console.log('sensor data', this.series[0].data)
@@ -358,13 +369,8 @@ export default {
         console.log('tes', sensorProps)
         this.chartOptions.xaxis.categories = data.categories_data
         this.chartOptions.chart.toolbar.export.csv.filename = data.sensor_data.node
-        this.loadstate(false)
-      } catch (error) {
-        const { response } = error
-        console.log('error sensor detail', response)
-        if (response.status === 404) this.notFound = true
-        this.loadstate(false)
-      }
+        resolve()
+      })
     },
     loadstate (state) {
       this.isLoad = state

@@ -85,8 +85,9 @@ export default {
         this.loadstate(true)
         const response = await this.axios.get(`node/${this.$route.params.id}`)
         console.log('respoinse fetch node', response)
-        this.node.sensors = response.data.data.sensors
-        this.node.id = response.data.data.id
+        // this.node.sensors = response.data.data.sensors
+        // this.node.id = response.data.data.id
+        await this.setData(response)
         this.loadstate(false)
       } catch (error) {
         console.log('error fetch detail node', error)
@@ -98,6 +99,13 @@ export default {
         //   message: 'Terjadi kesalahan pada server!'
         // })
       }
+    },
+    setData (response) {
+      return new Promise((resolve) => {
+        this.node.sensors = response.data.data.sensors
+        this.node.id = response.data.data.id
+        resolve()
+      })
     },
     loadstate (state) {
       this.isLoad = state

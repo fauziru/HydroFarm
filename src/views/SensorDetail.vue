@@ -19,7 +19,7 @@
         class="d-flex flex-column flex-grow-1"
         style="position: relative;"
       >
-        <v-card-title v-if="!loadState">
+        <v-card-title v-if="!isLoad">
           <div>
             <!-- mock -->
             {{ sensorData.node }}/{{ sensorData.name_sensor }} &mdash;
@@ -161,7 +161,7 @@
           <!-- /filter dialog -->
           <!-- menu -->
         </v-card-title>
-        <div v-if="series[0].data.length > 0 && !loadState">
+        <div v-if="series[0].data.length > 0 && !isLoad">
           <div v-if="sensorData !== {}" class="px-4 pb-4">
             <div class="d-flex align-center">
               <div class="text-h4 primary--text">
@@ -204,7 +204,7 @@
         </div>
         <!-- if nothing -->
         <div
-          v-else-if="loadState"
+          v-else-if="isLoad"
           class="text-center my-auto"
         >
           <Loader />
@@ -246,6 +246,7 @@ export default {
     dialog: false,
     datepickerModal: false,
     notFound: false,
+    isLoad: false,
     filterWaktu: [
       { title: 'Hari ini', subtitle: 'Menampilkan semua data pada hari ini', endpoint: 'today' },
       { title: '7 hari terakhir', subtitle: 'Menampilkan semua data pada 7 hari terakhir', endpoint: 'this-week' },
@@ -307,7 +308,7 @@ export default {
   },
 
   computed: {
-    ...mapState('layout', ['isMobile', 'loadState']),
+    ...mapState('layout', ['isMobile']),
     lastRead: {
       get () {
         return this.series[0].data.slice(0).splice(-1, 1).toString()
@@ -366,7 +367,7 @@ export default {
       }
     },
     loadstate (state) {
-      this.$store.commit('layout/setLoadstate', state)
+      this.isLoad = state
     },
     filtered () {
       if (this.radioGroup === 3 && this.$v.filterDate.$invalid) {

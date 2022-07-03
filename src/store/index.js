@@ -18,7 +18,7 @@ const state = createPersistedState({
   storage: {
     getItem: key => Cookies.get(key),
     setItem: (key, value) =>
-      Cookies.set(key, value, { expires: 1, secure: !debug }),
+      Cookies.set(key, value, { expires: 15, secure: !debug }),
     removeItem: key => Cookies.remove(key)
   }
 })

@@ -373,6 +373,7 @@ export default {
         : this.dialogDelete = true
     },
     deleteItemConfirm () {
+      // hapus
       // add axios.delete
       this.loadstate(true)
       this.axios.delete(`sensor/${this.editedItem.id}`)

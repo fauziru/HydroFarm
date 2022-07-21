@@ -96,20 +96,22 @@
                 subheader
               >
                 <v-subheader>Waktu</v-subheader>
-                <v-radio-group v-model="radioGroup">
-                  <v-list-item
-                    v-for="(item, index) in filterWaktu"
-                    :key="index"
-                  >
-                    <v-list-item-action>
-                      <v-radio :value="index" />
-                    </v-list-item-action>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ item.title }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-radio-group>
+                <v-list-item-group v-model="radioGroup">
+                  <v-radio-group v-model="radioGroup">
+                    <v-list-item
+                      v-for="(item, index) in filterWaktu"
+                      :key="index"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-list-item-action>
+                        <v-radio :value="index" />
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-radio-group>
+                </v-list-item-group>
                 <v-list-item>
                   <v-dialog
                     ref="dialog"
@@ -333,6 +335,10 @@ export default {
 
   created () {
     this.initialize('today')
+  },
+
+  updated () {
+    if (this.radioGroup === undefined) this.radioGroup = 0
   },
 
   destroyed () {

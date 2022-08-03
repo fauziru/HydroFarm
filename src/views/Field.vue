@@ -200,16 +200,19 @@
         >
           Greenhouse Layout
         </l-control>
-        <l-control v-if="user.role === 'admin'" :position="'topright'">
+        <l-control v-if="user.role === 'admin'" :position="'topright'" :style="{backgroundColor: 'white', borderRadius: '8px', padding: '10px', border: '2px solid rgba(0,0,0,0.2)'}">
           <v-switch
             v-model="addNewMode"
-            :label="`Tambah baru: ${addNewMode ? 'Aktif' : 'Mati'}`"
+            :label="`Tambah`"
+            append-icon="mdi-wifi-plus"
             inset
             @change="addMode()"
           />
           <v-switch
             v-model="editMode"
-            :label="`Edit: ${editMode ? 'Aktif' : 'Mati'}`"
+            :label="`Edit`"
+            append-icon="mdi-pencil"
+            class="mt-0"
             inset
             @change="editModeFn()"
           />

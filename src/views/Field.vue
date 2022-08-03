@@ -123,6 +123,7 @@
       <!-- layout -->
       <l-map
         class="map"
+        :min-zoom="-1"
         :style="{ cursor: computedCursor, height: computedHeight, 'z-index': 1 }"
         :crs="crs"
         :center="center"

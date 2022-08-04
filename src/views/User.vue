@@ -86,11 +86,10 @@
           </v-chip>
         </template>
 
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-tooltip bottom>
+        <template v-if="isMe" v-slot:[`item.actions`]="{ item }">
+          <v-tooltip v-if="item.role !== 'admin'" bottom>
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                v-if="item.role !== 'admin'"
                 v-bind="attrs"
                 v-on="on"
                 icon
@@ -104,6 +103,23 @@
               </v-btn>
             </template>
             Jadikan Admin
+          </v-tooltip>
+          <v-tooltip v-else bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                v-bind="attrs"
+                v-on="on"
+                icon
+                depressed
+                link
+                @click="changeToUser(item.id)"
+              >
+                <v-icon small>
+                  mdi-account-minus
+                </v-icon>
+              </v-btn>
+            </template>
+            Hapus Admin
           </v-tooltip>
         </template>
 
@@ -148,7 +164,11 @@ export default {
     users: []
   }),
   computed: {
-    ...mapState('layout', ['isMobile', 'loadState'])
+    ...mapState('layout', ['isMobile', 'loadState']),
+    ...mapState('auth', ['email_address']),
+    isMe: function () {
+      return this.email_address === 'fauzirezaumr@gmail.com'
+    }
   },
 
   created () {
@@ -186,6 +206,17 @@ export default {
         await this.axios.post(`user/upgrade-admin/${id}`)
         this.loadstate(false)
         this.alertFire({ type: 'success', message: 'Berhasil mengupgrade user menjadi admin!' })
+      } catch (error) {
+        console.log('error', error)
+        this.loadstate(false)
+      }
+    },
+    async changeToUser (id) {
+      try {
+        this.loadstate(true)
+        await this.axios.post(`user/downgrade-admin/${id}`)
+        this.loadstate(false)
+        this.alertFire({ type: 'success', message: 'Berhasil downgrade user!' })
       } catch (error) {
         console.log('error', error)
         this.loadstate(false)

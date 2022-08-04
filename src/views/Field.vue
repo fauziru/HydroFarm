@@ -735,17 +735,17 @@ export default {
           const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
           if (indexNode !== -1) this.nodes.splice(indexNode, 1)
         })
-        // .listen('UpdateNode', (event) => {
-        //   const newNode = event.data
-        //   const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
-        //   indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
-        // })
+        .listen('UpdateNode', (event) => {
+          const newNode = event.data
+          const indexNode = this.nodes.findIndex(node => node.id === newNode.id)
+          indexNode === -1 ? this.nodes.push(newNode) : this.nodes.splice(indexNode, 1, newNode)
+        })
     },
     removeRealtimeEventListener () {
       window.Echo.private('events')
         .stopListening('UpdateLayout')
         .stopListening('DeleteNode')
-        // .stopListening('UpdateNode')
+        .stopListening('UpdateNode')
     }
   }
 }

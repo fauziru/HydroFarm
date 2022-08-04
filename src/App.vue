@@ -114,6 +114,7 @@ export default {
         passive: true
       })
     }
+    this.removeRealtimeEventListener()
   },
 
   created () {
@@ -147,11 +148,16 @@ export default {
     console.log('app loadState', this.loadState)
     this.onResize()
     window.addEventListener('resize', this.onResize, { passive: true })
-    // this.$mqtt.subscribe('sensor/#')
+    this.realtimeEventListener()
+    // get user detail
+    if (this.isLoggedin) {
+      this.details()
+    }
   },
   methods: {
     ...mapActions('layout', ['mobileBreak']),
     ...mapActions('meta', ['getMeta']),
+    ...mapActions('auth', ['details']),
     onResize () {
       this.mobileBreak(window.innerWidth < 1264)
     },
@@ -190,6 +196,18 @@ export default {
       } catch (error) {
         console.log('error', error)
       }
+    },
+    realtimeEventListener () {
+      window.Echo.private('events')
+        .listen('UpdateUserStatus', (event) => {
+          const { data } = event
+          console.log('updateUserStateEvents', data)
+          this.$store.dispatch('auth/updateUser', data)
+          window.location.reload()
+        })
+    },
+    removeRealtimeEventListener () {
+      window.Echo.private('events').stopListening('UpdateUserStatus')
     }
   }
 }

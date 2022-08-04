@@ -127,11 +127,18 @@ const actions = {
     router.push({ name: 'login' })
   },
 
+  async details ({ commit, state }) {
+   const { data } = await axios.get(`/user/${state.id}`)
+   console.log('get details', data.data)
+   commit(AUTH_MUTATIONS.UPDATE_USER, data.data)
+  },
+
   updateAvatar ({ commit }, image_path) {
     commit(AUTH_MUTATIONS.SET_IMAGE_PROFILE, image_path)
   },
 
   updateUser ({ commit }, user) {
+    console.log('vuex auth')
     commit(AUTH_MUTATIONS.UPDATE_USER, {name: user.name_user, address: user.adress, phone_number: user.phone})
   }
 }

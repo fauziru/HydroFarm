@@ -232,6 +232,7 @@ export default {
           this.$store.dispatch('auth/updateAvatar', imagePath)
           this.alert('Berhasil mengupload gambar!', 'success')
           this.loadstate(false)
+          this.uploadAvatar = !this.uploadAvatar
         } catch (error) {
           this.loadstate(false)
           console.log('error update avatar', error)

@@ -65,7 +65,7 @@
                   <v-text-field
                     v-model="editedItem.lat"
                     outlined
-                    label="Latitude"
+                    label="Posisi X"
                     :error-messages="latErrors"
                     @input="$v.editedItem.lat.$touch"
                   />
@@ -75,7 +75,7 @@
                     v-model="editedItem.lng"
                     outlined
                     :error-messages="lngErrors"
-                    label="Longitude"
+                    label="Posisi Y"
                     @input="$v.editedItem.lng.$touch"
                   />
                 </v-row>

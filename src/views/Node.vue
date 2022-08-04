@@ -50,7 +50,7 @@
                       v-model="editedItem.lat"
                       outlined
                       :error-messages="batasErrors"
-                      label="Latitude"
+                      label="Posisi X"
                       @input="$v.editedItem.lat.$touch"
                     />
                   </v-row>
@@ -59,7 +59,7 @@
                       v-model="editedItem.lng"
                       outlined
                       :error-messages="batasErrors"
-                      label="Longitude"
+                      label="Posisi Y"
                       @input="$v.editedItem.lng.$touch"
                     />
                   </v-row>

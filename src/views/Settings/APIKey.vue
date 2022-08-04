@@ -36,6 +36,7 @@
           </v-icon>
         </v-btn>
         <v-btn
+          v-if="isMe"
           color="primary"
           text
           @click.stop.prevent="generate"
@@ -58,10 +59,17 @@ export default {
     apiKey: ''
   }),
   computed: {
-    ...mapState('layout', ['isMobile', 'loadState'])
+    ...mapState('layout', ['isMobile', 'loadState']),
+    ...mapState('auth', ['user']),
+    isMe: function () {
+      return this.user.email_address === 'fauzirezaumr@gmail.com'
+    }
   },
   created () {
     this.initialize()
+  },
+  mounted () {
+    console.log('isMe', this.user.email_address === 'fauzirezaumr@gmail.com')
   },
   methods: {
     initialize () {

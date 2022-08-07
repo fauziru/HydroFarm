@@ -19,6 +19,14 @@
         </v-icon>
       </v-btn>
     </template>
+    <v-btn
+      :to="{ name: 'about' }"
+    >
+      <span>about</span>
+      <v-icon large>
+        mdi-information-outline
+      </v-icon>
+    </v-btn>
   </v-bottom-navigation>
 </template>
 

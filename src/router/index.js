@@ -88,7 +88,7 @@ const routes = [
     path: '/setting/about',
     name: 'about',
     component: () => import('../views/Settings/About.vue'),
-    meta: { requiresAuth: true, backButton: true, requiresAdmin: true }
+    meta: { requiresAuth: true, backButton: true, requiresAdmin: false }
   },
   {
     path: '/sensor',

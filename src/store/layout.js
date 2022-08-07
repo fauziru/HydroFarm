@@ -26,13 +26,13 @@ const state = () => ({
       icon: 'mdi-history',
       link: { name: 'activity' },
       role: ['admin', 'user']
-    },
-    {
-      name: 'Pengaturan',
-      icon: 'mdi-cog',
-      link: { name: 'setting' },
-      role: ['admin']
     }
+    // {
+    //   name: 'Pengaturan',
+    //   icon: 'mdi-cog',
+    //   link: { name: 'setting' },
+    //   role: ['admin']
+    // }
   ]
 })
 

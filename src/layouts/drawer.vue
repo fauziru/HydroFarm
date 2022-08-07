@@ -48,6 +48,20 @@
           </v-list-item-content>
         </v-list-item>
       </template>
+      <v-list-item
+          color="primary"
+          link
+          :to="{ name: 'setting' }"
+          v-if="isMe"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cog-outline</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Pengaturan</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
     </v-list>
     <!-- /side bar menu item -->
 
@@ -96,13 +110,18 @@ export default {
       // { title: 'Plant', icon: 'mdi-sprout-outline', link: '#' },
       { title: 'Pengguna', icon: 'mdi-account-group-outline', link: { name: 'user' }, role: ['admin'] },
       { title: 'Akun saya', icon: 'mdi-account-outline', link: { name: 'account' }, role: ['admin', 'user'] },
-      { title: 'Pengaturan', icon: 'mdi-cog-outline', link: { name: 'setting' }, role: ['admin'] }
+      { title: 'Layout', icon: 'mdi-map-search', link: { name: 'layout sensor' }, role: ['admin'] },
+      { title: 'About', icon: 'mdi-information-outline', link: { name: 'about' }, role: ['admin', 'user'] }
+      // { title: 'Pengaturan', icon: 'mdi-cog-outline', link: { name: 'setting' }, role: ['admin'] }
     ]
   }),
 
   computed: {
     ...mapState('layout', ['isMobile', 'loadState']),
-    ...mapState('auth', ['user']),
+    ...mapState('auth', ['user', 'email_address']),
+    isMe: function () {
+      return this.email_address === 'fauzirezaumr@gmail.com'
+    },
     srcImage () {
       return this.user.img_path ? this.sourceImage + this.user.img_path : `https://ui-avatars.com/api/?name=${this.user.name}&background=b0d388`
     },
